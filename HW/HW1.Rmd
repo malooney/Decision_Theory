@@ -1,0 +1,93 @@
+---
+title: "STAT 5370 – Decision Theory"
+subtitle: "Homework 1"
+author: "Matthew Aaron Looney"
+date: "6/9/2018"
+output: pdf_document
+---
+
+```{r, echo=F, warning=F, message=F}
+
+#library(datasets)
+#data(faithful)
+
+```
+
+
+# Problem 1
+
+In this problem we will consider developing a Bayesian model for Poisson
+iid data; i.e., our observed data will consist of $Y_1,...,Y_n \mathop  \sim \limits^{iid} Poisson(\lambda )$. Recall, a random variable $Y$ is said to follow a Poisson distribution, with mean paramater $\lambda$, if its pmf is given by
+
+\[p(y|\lambda ) = \frac{{{e^{ - \lambda }}{\lambda ^y}}}{{y!}}I(y \in \{ 0,1,2,...\} )\]
+
+
+Note, the Poisson model is often used to analyze count data.
+
+### (a)  For the Poisson model, identify the conjugate prior. This should be a general class of priors.
+
+If we assume the Gamma distribution as a prior for the Poisson model: $p(\lambda)=\frac{{{\beta ^\alpha }}}{{\Gamma (\alpha )}}{\lambda^{\alpha  - 1}}{e^{ - \beta \lambda}}  \propto {\lambda^{\alpha  - 1}}{e^{ - \beta \lambda}}$; where $\alpha>0$ (shape paramater) and $\beta>0$ (rate paramater) then this choice of prior is also the conjugate prior for the Poisson model.
+
+
+### (b)  Under the conjugate prior, derive the posterior distribution of $\lambda|y$. This should be a general expression based on the choice of the hyper-parameters specified in your prior.
+
+To derive the posterior distribution we need the liklihood function associated with the Poisson model:
+
+\[L(\lambda |y) = \prod\limits_{i = 1}^n {\frac{{{e^{ - \lambda }}{\lambda ^y}}}{{y!}}}  = \frac{{{e^{ - n\lambda }}{\lambda ^{\sum\limits_{i = 1}^n {{y_i}} }}}}{{\prod\limits_{i = 1}^n {y!} }}\]
+
+In general, the posterior distribution is defined as:
+
+\[p(\lambda |y) = \frac{{p(y|\lambda )p(\lambda )}}{{\int\limits_A {p(y|\lambda )p(\lambda )d\lambda } }} \propto \underbrace {p(y|\lambda )}_{{\text{L(}}\lambda {\text{)}}}\underbrace {p(\lambda )}_{{\text{Prior}}}\]
+
+With a Poisson DGP and a Gamma prior the derived posterior distribution is defined by:
+
+\[p(\lambda |y) = {e^{ - n\lambda }}{\lambda ^{\sum\limits_{i = 1}^n {{y_i}} }} \cdot {\lambda ^{\alpha  - 1}}{e^{ - \beta \lambda }} = {\lambda ^{\sum\limits_{}^{} {{y_i} + \alpha  - 1} }} \cdot {e^{ - (n - \beta )\lambda }}\]
+
+The posterior distribution of $\lambda$ under the Gamma prior is $Gamma( {\sum {{y_i}}  + \alpha }, {n + \beta })$, where $\alpha$ and $\beta$ are the hyperparamaters of the Gamma distribution.
+
+
+### (c)  Find the posterior mean and variance of $\lambda|y$. These should be general expressions based on the choice of the hyper-parameters specified in your prior.
+
+The mean and variance of the Gamma distribution is given by the following expressions: $E(\lambda)=\frac{\alpha}{\beta}$; $Var(\lambda)=\frac{\alpha}{\beta^2}$.
+
+Then the posterior mean and variance  of $\lambda|y$ is:
+
+\[E(\lambda |y) = \frac{\alpha }{\beta } = \frac{{\sum {{y_i}}  + \alpha }}{{n + \beta }}\]
+
+\[Var(\lambda |y) = \frac{\alpha }{{{\beta ^2}}} = \frac{{\sum {{y_i}}  + \alpha }}{{{{(n + \beta )}^2}}}\]
+
+
+### (d)   Obtain the MLE of $\lambda$. Develop and discuss a relationship that exists between the MLE and posterior mean identified in (c).
+
+
+
+
+### (e)  Write two separate R programs which can be used to find both a (1-$\alpha$)100% equal-tailed credible interval and a (1-$\alpha$)100% HPD credible interval for the Poisson model. These programs should take as arguments the following inputs: the observed data, prior hyper-parameters, and significance level.
+
+
+
+
+### (f)  Find a data set which could be appropriately analyzed using the Poisson model. This data set should be of interest to you, and you should discuss, briefly, why the aforementioned model is appropriate; e.g., consider independence, identically distributed, etc. etc. You will also need to provide the source of the data.
+
+```{r echo=F, fig.height=3.5}
+
+#par(mfrow=c(1,2), ps = 10, cex = 0.75, cex.main = 1)
+
+#plot(x = faithful$eruptions, y = faithful$waiting, 
+#     main = "Old Faithful Data Plot", 
+#     xlab = "Eruption Duration (Min)", 
+#     ylab = "Wait Time Between Eruptions (Min)")
+
+#plot(density(faithful$waiting), main = "Old Faithful Wait Time")
+
+```
+
+
+
+### (g)  Analyze the data set you have selected in (e). Provide posterior point estimates of $\lambda$, credible intervals, etc. etc. Your analysis should be accompanied by an appropriate discussion of your findings.
+
+
+
+
+
+
