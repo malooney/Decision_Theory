@@ -8,8 +8,69 @@ output: pdf_document
 
 ```{r, echo=F, warning=F, message=F}
 
+# Housekeeping ----------------------------------------------------------------
+rm(list=ls())
+cat("\014")
 #library(datasets)
 #data(faithful)
+library(feather)
+library(dplyr)
+
+# Load Data -------------------------------------------------------------------
+LA_data_2010 <- read_feather("/Users/malooney/Google Drive/digitalLibrary/*MS_Thesis/MS_Thesis/data/LA_data_2010_feather")
+
+# Add volume measures ---------------------------------------------------------
+oz <- round(data.frame(oz=LA_data_2010$VOL_EQ.x* 288))
+total_oz <- (oz* LA_data_2010$UNITS); 
+colnames(total_oz) <- "total_oz"
+total_gal <- (0.0078125* total_oz); 
+colnames(total_gal) <- "total_gal"
+dollarPerGal <- LA_data_2010$DOLLARS/ total_gal; 
+colnames(dollarPerGal) <- "dollarPerGal"
+
+LA_data_2010_manip <- cbind(LA_data_2010, oz, total_oz, total_gal, 
+                            dollarPerGal)
+
+rm(oz, total_gal, total_oz, dollarPerGal, LA_data_2010)
+
+# Remove zero data ------------------------------------------------------------
+LA_data_2010_manip <- filter(LA_data_2010_manip, L5 !="ALL BRAND")
+LA_data_2010_manip <- filter(LA_data_2010_manip, dollarPerGal !="Inf")
+
+# Explore Brands, Firms, and percenatges of Brands by Firms -------------------
+#uniqueBrands <- data.frame(table(LA_data_2010_manip$L5))
+#uniqueBrands <- arrange(uniqueBrands, desc(Freq))
+#(sum(uniqueBrands[1:20,2]) / nrow(LA_data_2010_manip)) * 100
+
+uniqueBrands_all <- data.frame(Brand = rep(LA_data_2010_manip$L5, 
+                                       LA_data_2010_manip$UNITS), 
+                           y = sequence(LA_data_2010_manip$UNITS))
+
+uniqueBrands <- data.frame(table(uniqueBrands_all$Brand))
+uniqueBrands <- arrange(uniqueBrands, desc(Freq))
+prcntBrandRep <- (sum(uniqueBrands[1:60,2]) / nrow(uniqueBrands_all)) * 100
+
+uniqueChains <- data.frame(table(LA_data_2010_manip$MskdName))
+uniqueChains <- arrange(uniqueChains, desc(Freq))
+uniqueFirms <- data.frame(table(LA_data_2010_manip$L4))
+uniqueFirms <- arrange(uniqueFirms, desc(Freq))
+uniqueConglomerates <- data.frame(table(LA_data_2010_manip$L3))
+uniqueConglomerates <- arrange(uniqueConglomerates, desc(Freq))
+
+rm(uniqueBrands_all)
+
+LA_data_2010_manip <- filter(LA_data_2010_manip, MskdName=="Chain79")
+LA_data_2010_manip <- filter(LA_data_2010_manip, L5=="BUD LIGHT")
+
+uniqueWeeks <- unique(LA_data_2010_manip$WEEK)
+
+mainData <- data.frame(week=c(1:52), units = c(1:52))
+for(i in 1:length(uniqueWeeks)){
+  temp <- filter(LA_data_2010_manip, WEEK== uniqueWeeks[i])
+  temp <- sum(temp$UNITS)
+  mainData[i,2] <- temp
+  
+}
 
 ```
 
