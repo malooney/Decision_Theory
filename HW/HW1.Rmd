@@ -6,7 +6,7 @@ date: "6/9/2018"
 output: pdf_document
 ---
 
-```{r, echo=F, warning=F, message=F}
+```{r, echo=F, warning=F, message=F, cache=T}
 
 # Housekeeping ----------------------------------------------------------------
 rm(list=ls())
@@ -42,35 +42,46 @@ LA_data_2010_manip <- filter(LA_data_2010_manip, dollarPerGal !="Inf")
 #uniqueBrands <- arrange(uniqueBrands, desc(Freq))
 #(sum(uniqueBrands[1:20,2]) / nrow(LA_data_2010_manip)) * 100
 
-uniqueBrands_all <- data.frame(Brand = rep(LA_data_2010_manip$L5, 
-                                       LA_data_2010_manip$UNITS), 
-                           y = sequence(LA_data_2010_manip$UNITS))
+#uniqueBrands_all <- data.frame(Brand = rep(LA_data_2010_manip$L5, 
+#                                       LA_data_2010_manip$UNITS), 
+#                           y = sequence(LA_data_2010_manip$UNITS))
 
-uniqueBrands <- data.frame(table(uniqueBrands_all$Brand))
-uniqueBrands <- arrange(uniqueBrands, desc(Freq))
-prcntBrandRep <- (sum(uniqueBrands[1:60,2]) / nrow(uniqueBrands_all)) * 100
+#uniqueBrands <- data.frame(table(uniqueBrands_all$Brand))
+#uniqueBrands <- arrange(uniqueBrands, desc(Freq))
+#prcntBrandRep <- (sum(uniqueBrands[1:60,2]) / nrow(uniqueBrands_all)) * 100
 
-uniqueChains <- data.frame(table(LA_data_2010_manip$MskdName))
-uniqueChains <- arrange(uniqueChains, desc(Freq))
-uniqueFirms <- data.frame(table(LA_data_2010_manip$L4))
-uniqueFirms <- arrange(uniqueFirms, desc(Freq))
-uniqueConglomerates <- data.frame(table(LA_data_2010_manip$L3))
-uniqueConglomerates <- arrange(uniqueConglomerates, desc(Freq))
+#uniqueChains <- data.frame(table(LA_data_2010_manip$MskdName))
+#uniqueChains <- arrange(uniqueChains, desc(Freq))
+#uniqueFirms <- data.frame(table(LA_data_2010_manip$L4))
+#uniqueFirms <- arrange(uniqueFirms, desc(Freq))
+#uniqueConglomerates <- data.frame(table(LA_data_2010_manip$L3))
+#uniqueConglomerates <- arrange(uniqueConglomerates, desc(Freq))
 
-rm(uniqueBrands_all)
-
-LA_data_2010_manip <- filter(LA_data_2010_manip, MskdName=="Chain79")
-LA_data_2010_manip <- filter(LA_data_2010_manip, L5=="BUD LIGHT")
+#rm(uniqueBrands_all)
 
 uniqueWeeks <- unique(LA_data_2010_manip$WEEK)
 
-mainData <- data.frame(week=c(1:52), units = c(1:52))
+LA_data_2010_manip1 <- filter(LA_data_2010_manip, MskdName=="Chain79")
+LA_data_2010_manip2 <- filter(LA_data_2010_manip1, L5=="ANCHOR STEAM BEER")
+LA_data_2010_manip3 <- filter(LA_data_2010_manip2, upc=="00-01-72783-00100")
+
+
+mainData <- data.frame(week=c(1:52), units = c(1:52), gallons = c(1:52), 
+                       `Calendar week starting on` = c(1:52), 
+                       weekNum = uniqueWeeks)
+
 for(i in 1:length(uniqueWeeks)){
-  temp <- filter(LA_data_2010_manip, WEEK== uniqueWeeks[i])
-  temp <- sum(temp$UNITS)
-  mainData[i,2] <- temp
+  temp <- filter(LA_data_2010_manip3, WEEK== uniqueWeeks[i])
+  temp1 <- sum(temp$UNITS)
+  temp2 <- sum(temp$total_gal)
+  mainData[i,2] <- temp1
+  mainData[i,3] <- temp2
+  mainData[i,4] <- as.character(unique(LA_data_2010_manip$`Calendar week starting on`)[i])
   
 }
+
+rm(i, temp, temp1, temp2, uniqueWeeks, LA_data_2010_manip, 
+   LA_data_2010_manip1, LA_data_2010_manip2, LA_data_2010_manip3)
 
 ```
 
@@ -132,14 +143,14 @@ Then the posterior mean and variance  of $\lambda|y$ is:
 
 ```{r echo=F, fig.height=3.5}
 
-#par(mfrow=c(1,2), ps = 10, cex = 0.75, cex.main = 1)
+par(mfrow=c(1,2), ps = 10, cex = 0.75, cex.main = 1)
 
-#plot(x = faithful$eruptions, y = faithful$waiting, 
-#     main = "Old Faithful Data Plot", 
-#     xlab = "Eruption Duration (Min)", 
-#     ylab = "Wait Time Between Eruptions (Min)")
+plot(x = mainData[,1], y = mainData[,2], type="l", 
+     main="Unit of Beer Sold per Week", 
+     xlab="Week", 
+     ylab="Units")
 
-#plot(density(faithful$waiting), main = "Old Faithful Wait Time")
+hist(mainData[,2], main="Histogram of Unit of Beer Sold per Week")
 
 ```
 
@@ -147,6 +158,91 @@ Then the posterior mean and variance  of $\lambda|y$ is:
 
 ### (g)  Analyze the data set you have selected in (e). Provide posterior point estimates of $\lambda$, credible intervals, etc. etc. Your analysis should be accompanied by an appropriate discussion of your findings.
 
+```{r, echo=F, fig.height=7}
+
+par(mfrow=c(2,2), ps = 10, cex = 0.75, cex.main = 1)
+
+
+# Beer data -------------------------------------------------------------------
+sum_y = sum(mainData$units)
+n = length(mainData$units)
+mu_y.Freq <- mean(mainData$units)
+var_y.Freq <- var(mainData$units)
+
+# prior and posterior ---------------------------------------------------------
+mu_0 <- 4
+sigma2_0 <-8
+
+b0 <- mu_0 / sigma2_0
+a0 <- mu_0 * b0
+
+lambda.grid = seq(0.1, 20, length=10000)
+
+lambda.grid.priorpmf = dgamma(lambda.grid, shape = a0, rate = b0)
+
+priorpmf.grid = dgamma(lambda.grid, shape=a0, rate=b0)
+
+# Plot Prior ------------------------------------------------------------------
+plot(lambda.grid, priorpmf.grid,
+     col='red', type="l", 
+     main="Prior Density", xlab=expression(lambda), ylab="density")
+lines(density(mainData$units), lty=2)
+legend(12, .18,  c("Prior", "Data"), lty=c(1,2), col=c("red", "black"))
+
+# Plot Likelihood -------------------------------------------------------------
+likelihood.grid = dpois(sum_y, lambda = n * lambda.grid, log=F)
+
+plot(x = lambda.grid, y = likelihood.grid,
+     main="Likelihood of Lambda", 
+     col='green',type="l", 
+     xlab=  expression(lambda), 
+     ylab= expression(L(lambda)))
+
+# posterior parameters --------------------------------------------------------
+a1= a0 + sum_y
+b1 = b0 + n
+
+posteriorpmf.grid=dgamma(lambda.grid,shape= a1, rate= b1)
+
+# Plot Posterior --------------------------------------------------------------
+plot(lambda.grid, posteriorpmf.grid,
+     main="Posterior Density",  ylab="density", col='blue', type="l",
+     xlab=expression(lambda))
+
+# Plot densities together -----------------------------------------------------
+plot(lambda.grid, posteriorpmf.grid, ylab="density",
+     main="Densities \n Gamma Prior/Posterior (red/blue)\n",
+     type="n", xlab=expression(lambda))
+
+lines(lambda.grid, priorpmf.grid, col='red') # prior
+
+lines(lambda.grid, posteriorpmf.grid, col='blue') # posterior
+
+lines(density(mainData$units), lty=2) # data
+
+lines(lambda.grid, 20*likelihood.grid, col="green") # liklihood
+
+legend(10, 1.35,  c("Prior", "Data", "Likelihood", "Posterior"), 
+       lty=c(1,2,1, 1), col=c("red", "black", "green", "blue"))
+
+
+posterior.mean = a1/b1
+posterior.var = a1/b1^2
+
+# #     Add case of Uniform prior ----
+# lines(lambda.grid, (1 + 0 * priorpmf.grid) * 0.1 / 30, col='orange')
+# posteriorpmf.uniformprior.grid = dgamma(lambda.grid, shape = 1 + sum_y,
+#                                         rate= n)
+# 
+# lines(lambda.grid, posteriorpmf.uniformprior.grid, col='green')
+# 
+# title(main="\n\nUniform Prior/Posterior (orange/green)")
+
+#########################################
+## Quantile-based intervals
+qgamma(c(0.025, 0.975), a1, b1)
+
+```
 
 
 

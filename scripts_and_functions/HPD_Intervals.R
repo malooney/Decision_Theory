@@ -14,7 +14,7 @@ theta <- seq(0.001, 0.999, by = 0.001)
 plot(theta, dbeta(theta, y + 1, n - y + 1), t="l",lty=1,
      ylab="Posterior Density",
      xlab=expression(theta))
-lines(theta, dbeta(theta, 1,1), lty=2)
+lines(theta, dbeta(theta, 1, 1), lty=2)
 legend(0.15, 25, c("Posterior", "Prior"), lty=c(1,2))
 
 
