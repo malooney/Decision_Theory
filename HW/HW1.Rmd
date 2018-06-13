@@ -91,8 +91,9 @@ rm(i, temp, temp1, temp2, uniqueWeeks, LA_data_2010_manip,
 In this problem we will consider developing a Bayesian model for Poisson
 iid data; i.e., our observed data will consist of $Y_1,...,Y_n \mathop  \sim \limits^{iid} Poisson(\lambda )$. Recall, a random variable $Y$ is said to follow a Poisson distribution, with mean paramater $\lambda$, if its pmf is given by
 
-\[p(y|\lambda ) = \frac{{{e^{ - \lambda }}{\lambda ^y}}}{{y!}}I(y \in \{ 0,1,2,...\} )\]
-
+\begin{equation}
+p(y|\lambda ) = \frac{{{e^{ - \lambda }}{\lambda ^y}}}{{y!}}I(y \in \{ 0,1,2,...\} )
+\end{equation}
 
 Note, the Poisson model is often used to analyze count data.
 
@@ -105,15 +106,24 @@ If we assume the Gamma distribution as a prior for the Poisson model: $p(\lambda
 
 To derive the posterior distribution we need the liklihood function associated with the Poisson model:
 
-\[L(\lambda |y) = \prod\limits_{i = 1}^n {\frac{{{e^{ - \lambda }}{\lambda ^y}}}{{y!}}}  = \frac{{{e^{ - n\lambda }}{\lambda ^{\sum\limits_{i = 1}^n {{y_i}} }}}}{{\prod\limits_{i = 1}^n {y!} }}\]
+\begin{equation}
+L(\lambda |y) = \prod\limits_{i = 1}^n {\frac{{{e^{ - \lambda }}{\lambda ^y}}}{{y!}}}  = \frac{{{e^{ - n\lambda }}{\lambda ^{\sum\limits_{i = 1}^n {{y_i}} }}}}{{\prod\limits_{i = 1}^n {y!} }}
+\end{equation}
 
 In general, the posterior distribution is defined as:
 
-\[p(\lambda |y) = \frac{{p(y|\lambda )p(\lambda )}}{{\int\limits_A {p(y|\lambda )p(\lambda )d\lambda } }} \propto \underbrace {p(y|\lambda )}_{{\text{L(}}\lambda {\text{)}}}\underbrace {p(\lambda )}_{{\text{Prior}}}\]
+\begin{equation}
+p(\lambda |y) = \frac{{p(y|\lambda )p(\lambda )}}{{\int\limits_A {p(y|\lambda )p(\lambda )d\lambda } }} \propto \underbrace {p(y|\lambda )}_{{\text{L(}}\lambda {\text{)}}}\underbrace {p(\lambda )}_{{\text{Prior}}}
+\end{equation}
 
 With a Poisson DGP and a Gamma prior the derived posterior distribution is defined by:
 
-\[p(\lambda |y) = {e^{ - n\lambda }}{\lambda ^{\sum\limits_{i = 1}^n {{y_i}} }} \cdot {\lambda ^{\alpha  - 1}}{e^{ - \beta \lambda }} = {\lambda ^{\sum\limits_{}^{} {{y_i} + \alpha  - 1} }} \cdot {e^{ - (n - \beta )\lambda }}\]
+\begin{equation}
+\begin{aligned}
+  p(\lambda | y) &= {e^{ - n\lambda }}{\lambda ^{\sum\limits_{i = 1}^n {{y_i}} }} \cdot {\lambda ^{\alpha  - 1}}{e^{ - \beta \lambda }} \\ 
+                 &= {\lambda ^{\sum\limits_{}^{} {{y_i} + \alpha  - 1} }} \cdot {e^{ - (n - \beta )\lambda }} \\ 
+\end{aligned}
+\end{equation}
 
 The posterior distribution of $\lambda$ under the Gamma prior is $Gamma( {\sum {{y_i}}  + \alpha }, {n + \beta })$, where $\alpha$ and $\beta$ are the hyperparamaters of the Gamma distribution.
 
@@ -124,14 +134,32 @@ The mean and variance of the Gamma distribution is given by the following expres
 
 Then the posterior mean and variance  of $\lambda|y$ is:
 
-\[E(\lambda |y) = \frac{\alpha }{\beta } = \frac{{\sum {{y_i}}  + \alpha }}{{n + \beta }}\]
-
-\[Var(\lambda |y) = \frac{\alpha }{{{\beta ^2}}} = \frac{{\sum {{y_i}}  + \alpha }}{{{{(n + \beta )}^2}}}\]
+\begin{equation}
+\begin{aligned}
+E(\lambda |y) &= \frac{\alpha }{\beta } = \frac{{\sum {{y_i}}  + \alpha }}{{n + \beta }} \\
+Var(\lambda |y) &= \frac{\alpha }{{{\beta ^2}}} = \frac{{\sum {{y_i}}  + \alpha }}{{{{(n + \beta )}^2}}}
+\end{aligned}
+\end{equation}
 
 
 ### (d)   Obtain the MLE of $\lambda$. Develop and discuss a relationship that exists between the MLE and posterior mean identified in (c).
 
+Starting from the Poisson distribution, $p(y|\lambda ) = \frac{{{e^{ - \lambda }}{\lambda ^y}}}{{y!}}$, we obtain the liklihood function:
 
+\[L(\lambda |{y_1},{y_2},...,{y_n}) = \prod\limits_{i = 1}^n {\frac{{{e^{ - \lambda }}{\lambda ^{{y_i}}}}}{{{y_i}!}}} \]
+
+Then, taking log of above equation and taking derivatives we can obtain an expression for $\hat\lambda$:
+
+\begin{equation}
+\begin{gathered}
+  \log L(\lambda |{x_1},{x_2},...,{x_n}) =  - n\lambda  - \sum\limits_{i = 1}^n {\log ({y_i}!) + \log (\lambda )\sum\limits_{i = 1}^n {{y_i}} }  \hfill \\
+  \frac{{\partial \log L( \cdot )}}{{\partial \lambda }} =  - n + \frac{{\sum\limits_{i = 1}^n {{y_i}} }}{\lambda } = 0 \hfill \\
+  \hat \lambda  = \frac{{\sum\limits_{i = 1}^n {{y_i}} }}{n} \hfill \\ 
+\end{gathered} 
+\end{equation}
+
+
+We can now see that when the hyperparamaters of the posterior mean (part c) are zero the posterior mean collapses to the MLE estimator of $\lambda$. 
 
 
 ### (e)  Write two separate R programs which can be used to find both a (1-$\alpha$)100% equal-tailed credible interval and a (1-$\alpha$)100% HPD credible interval for the Poisson model. These programs should take as arguments the following inputs: the observed data, prior hyper-parameters, and significance level.
@@ -176,23 +204,25 @@ sigma2_0 <-8
 b0 <- mu_0 / sigma2_0
 a0 <- mu_0 * b0
 
-lambda.grid = seq(0.1, 20, length=10000)
+grid = seq(0.1, 20, length=10000)
 
-lambda.grid.priorpmf = dgamma(lambda.grid, shape = a0, rate = b0)
+grid.priorpmf = dgamma(grid, shape = a0, rate = b0)
 
-priorpmf.grid = dgamma(lambda.grid, shape=a0, rate=b0)
+priorpmf.grid = dgamma(grid, shape=a0, rate=b0)
 
 # Plot Prior ------------------------------------------------------------------
-plot(lambda.grid, priorpmf.grid,
+plot(grid, priorpmf.grid,
      col='red', type="l", 
      main="Prior Density", xlab=expression(lambda), ylab="density")
+
 lines(density(mainData$units), lty=2)
+
 legend(12, .18,  c("Prior", "Data"), lty=c(1,2), col=c("red", "black"))
 
 # Plot Likelihood -------------------------------------------------------------
-likelihood.grid = dpois(sum_y, lambda = n * lambda.grid, log=F)
+likelihood.grid = dpois(sum_y, lambda = n * grid, log=F)
 
-plot(x = lambda.grid, y = likelihood.grid,
+plot(x = grid, y = likelihood.grid,
      main="Likelihood of Lambda", 
      col='green',type="l", 
      xlab=  expression(lambda), 
@@ -202,25 +232,25 @@ plot(x = lambda.grid, y = likelihood.grid,
 a1= a0 + sum_y
 b1 = b0 + n
 
-posteriorpmf.grid=dgamma(lambda.grid,shape= a1, rate= b1)
+posteriorpmf.grid=dgamma(grid,shape= a1, rate= b1)
 
 # Plot Posterior --------------------------------------------------------------
-plot(lambda.grid, posteriorpmf.grid,
+plot(grid, posteriorpmf.grid,
      main="Posterior Density",  ylab="density", col='blue', type="l",
      xlab=expression(lambda))
 
 # Plot densities together -----------------------------------------------------
-plot(lambda.grid, posteriorpmf.grid, ylab="density",
+plot(grid, posteriorpmf.grid, ylab="density",
      main="Densities \n Gamma Prior/Posterior (red/blue)\n",
      type="n", xlab=expression(lambda))
 
-lines(lambda.grid, priorpmf.grid, col='red') # prior
+lines(grid, priorpmf.grid, col='red') # prior
 
-lines(lambda.grid, posteriorpmf.grid, col='blue') # posterior
+lines(grid, posteriorpmf.grid, col='blue') # posterior
 
 lines(density(mainData$units), lty=2) # data
 
-lines(lambda.grid, 20*likelihood.grid, col="green") # liklihood
+lines(grid, 20*likelihood.grid, col="green") # liklihood
 
 legend(10, 1.35,  c("Prior", "Data", "Likelihood", "Posterior"), 
        lty=c(1,2,1, 1), col=c("red", "black", "green", "blue"))
