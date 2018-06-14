@@ -3,7 +3,10 @@ title: "STAT 5370 – Decision Theory"
 subtitle: "Homework 1"
 author: "Matthew Aaron Looney"
 date: "6/9/2018"
-output: pdf_document
+output: 
+  pdf_document: 
+    toc: yes
+    toc_depth: 4
 ---
 
 ```{r, echo=F, warning=F, message=F, cache=T}
@@ -85,6 +88,7 @@ rm(i, temp, temp1, temp2, uniqueWeeks, LA_data_2010_manip,
 
 ```
 
+\newpage
 
 # Problem 1
 
@@ -146,25 +150,38 @@ Var(\lambda |y) &= \frac{\alpha }{{{\beta ^2}}} = \frac{{\sum {{y_i}}  + \alpha 
 
 Starting from the Poisson distribution, $p(y|\lambda ) = \frac{{{e^{ - \lambda }}{\lambda ^y}}}{{y!}}$, we obtain the liklihood function:
 
-\[L(\lambda |{y_1},{y_2},...,{y_n}) = \prod\limits_{i = 1}^n {\frac{{{e^{ - \lambda }}{\lambda ^{{y_i}}}}}{{{y_i}!}}} \]
+\begin{equation}
+L(\lambda |{y_1},{y_2},...,{y_n}) = \prod\limits_{i = 1}^n {\frac{{{e^{ - \lambda }}{\lambda ^{{y_i}}}}}{{{y_i}!}}} 
+\end{equation}
 
-Then, taking log of above equation and taking derivatives we can obtain an expression for $\hat\lambda$:
+Then, taking log of equation 6 and differnetiating w.r.t $\lambda$ we can obtain an expression for $\hat\lambda$:
 
 \begin{equation}
 \begin{gathered}
   \log L(\lambda |{x_1},{x_2},...,{x_n}) =  - n\lambda  - \sum\limits_{i = 1}^n {\log ({y_i}!) + \log (\lambda )\sum\limits_{i = 1}^n {{y_i}} }  \hfill \\
-  \frac{{\partial \log L( \cdot )}}{{\partial \lambda }} =  - n + \frac{{\sum\limits_{i = 1}^n {{y_i}} }}{\lambda } = 0 \hfill \\
+  \frac{{\partial \log L( \cdot )}}{{\partial \lambda }} =  - n + \frac{{\sum\limits_{i = 1}^n {{y_i}} }}{\hat\lambda } = 0 \hfill \\
   \hat \lambda  = \frac{{\sum\limits_{i = 1}^n {{y_i}} }}{n} \hfill \\ 
 \end{gathered} 
 \end{equation}
 
 
-We can now see that when the hyperparamaters of the posterior mean (part c) are zero the posterior mean collapses to the MLE estimator of $\lambda$. 
+We can now see that when the hyperparamaters of the posterior mean (part c, equation 5) are zero the posterior mean collapses to the MLE estimator of $\lambda$. This shows that the MLE estimator of $\lambda$ and the posterior mean of $\lambda$ are related by a weighted average. Further, we can see that the MLE estimator for $\lambda$ is $\sum\nolimits_{i = 1}^n {{y_i}} /n$ and the posterior mean are a combination of the weighted average of $\sum\nolimits_{i = 1}^n {{y_i}} /n$ and the prior mean.
 
 
 ### (e)  Write two separate R programs which can be used to find both a (1-$\alpha$)100% equal-tailed credible interval and a (1-$\alpha$)100% HPD credible interval for the Poisson model. These programs should take as arguments the following inputs: the observed data, prior hyper-parameters, and significance level.
 
+```{r, echo=F}
 
+equalTail_CI <- function(y, a1, b1, alpha){
+  
+  n <- length(y)
+  qgamma(c(0.025, 0.975), a1, b1)
+  
+}
+
+```
+
+Please see Appendix
 
 
 ### (f)  Find a data set which could be appropriately analyzed using the Poisson model. This data set should be of interest to you, and you should discuss, briefly, why the aforementioned model is appropriate; e.g., consider independence, identically distributed, etc. etc. You will also need to provide the source of the data.
@@ -206,9 +223,9 @@ a0 <- mu_0 * b0
 
 grid = seq(0.1, 20, length=10000)
 
-grid.priorpmf = dgamma(grid, shape = a0, rate = b0)
+grid.priorpmf = dgamma(grid, shape= a0, rate= b0)
 
-priorpmf.grid = dgamma(grid, shape=a0, rate=b0)
+priorpmf.grid = dgamma(grid, shape= a0, rate= b0)
 
 # Plot Prior ------------------------------------------------------------------
 plot(grid, priorpmf.grid,
@@ -259,22 +276,22 @@ legend(10, 1.35,  c("Prior", "Data", "Likelihood", "Posterior"),
 posterior.mean = a1/b1
 posterior.var = a1/b1^2
 
-# #     Add case of Uniform prior ----
-# lines(lambda.grid, (1 + 0 * priorpmf.grid) * 0.1 / 30, col='orange')
-# posteriorpmf.uniformprior.grid = dgamma(lambda.grid, shape = 1 + sum_y,
-#                                         rate= n)
-# 
-# lines(lambda.grid, posteriorpmf.uniformprior.grid, col='green')
-# 
-# title(main="\n\nUniform Prior/Posterior (orange/green)")
-
-#########################################
-## Quantile-based intervals
 qgamma(c(0.025, 0.975), a1, b1)
 
 ```
 
 
+\newpage
 
+# Appendix - Code for Problem 1, part e.
 
+R code for the Equal Tail Credible Interval:
 
+\begin{verbatim}
+equalTail_CI <- function(y, a1, b1, alpha){
+  
+  n <- length(y)
+  qgamma(c(0.025, 0.975), a1, b1)
+  
+}
+\end{verbatim}
