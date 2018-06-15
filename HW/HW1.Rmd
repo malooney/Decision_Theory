@@ -7,9 +7,22 @@ output:
   pdf_document: 
     toc: yes
     toc_depth: 4
+    
+header-includes:
+- \usepackage{graphicx}
+- \usepackage{rotating}
+- \usepackage{longtable}
+- \usepackage{amssymb,amsmath}
+- \usepackage{dcolumn}
+- \usepackage{setspace}
+- \usepackage{mathrsfs}
+- \usepackage{eso-pic,graphicx,transparent}
+
+fontsize: 12pt
+geometry: margin = 1.25in
 ---
 
-```{r, echo=F, warning=F, message=F, cache=T}
+```{r, echo=F, warning=F, message=F, cache=F}
 
 # Housekeeping ----------------------------------------------------------------
 rm(list=ls())
@@ -18,6 +31,11 @@ cat("\014")
 #data(faithful)
 library(feather)
 library(dplyr)
+library(stargazer)
+
+```
+
+```{r, echo=F, warning=F, message=F, cache=T}
 
 # Load Data -------------------------------------------------------------------
 LA_data_2010 <- read_feather("/Users/malooney/Google Drive/digitalLibrary/*MS_Thesis/MS_Thesis/data/LA_data_2010_feather")
@@ -90,10 +108,12 @@ rm(i, temp, temp1, temp2, uniqueWeeks, LA_data_2010_manip,
 
 \newpage
 
+\doublespacing
+
 # Problem 1
 
 In this problem we will consider developing a Bayesian model for Poisson
-iid data; i.e., our observed data will consist of $Y_1,...,Y_n \mathop  \sim \limits^{iid} Poisson(\lambda )$. Recall, a random variable $Y$ is said to follow a Poisson distribution, with mean paramater $\lambda$, if its pmf is given by
+iid data; i.e., our observed data will consist of $Y_1,...,Y_n \mathop  \sim \limits^{iid} Poisson(\lambda )$. Recall, a random variable $Y$ is said to follow a Poisson distribution, with mean parameter $\lambda$, if its pmf is given by
 
 \begin{equation}
 p(y|\lambda ) = \frac{{{e^{ - \lambda }}{\lambda ^y}}}{{y!}}I(y \in \{ 0,1,2,...\} )
@@ -103,12 +123,12 @@ Note, the Poisson model is often used to analyze count data.
 
 ### (a)  For the Poisson model, identify the conjugate prior. This should be a general class of priors.
 
-If we assume the Gamma distribution as a prior for the Poisson model: $p(\lambda)=\frac{{{\beta ^\alpha }}}{{\Gamma (\alpha )}}{\lambda^{\alpha  - 1}}{e^{ - \beta \lambda}}  \propto {\lambda^{\alpha  - 1}}{e^{ - \beta \lambda}}$; where $\alpha>0$ (shape paramater) and $\beta>0$ (rate paramater) then this choice of prior is also the conjugate prior for the Poisson model.
+If we assume the Gamma distribution as a prior for the Poisson model: $p(\lambda)=\frac{{{\beta ^\alpha }}}{{\Gamma (\alpha )}}{\lambda^{\alpha  - 1}}{e^{ - \beta \lambda}}  \propto {\lambda^{\alpha  - 1}}{e^{ - \beta \lambda}}$; where $\alpha>0$ (shape parameter) and $\beta>0$ (rate parameter) then this choice of prior is also the conjugate prior for the Poisson model.
 
 
 ### (b)  Under the conjugate prior, derive the posterior distribution of $\lambda|y$. This should be a general expression based on the choice of the hyper-parameters specified in your prior.
 
-To derive the posterior distribution we need the liklihood function associated with the Poisson model:
+To derive the posterior distribution we need the likelihood function associated with the Poisson model:
 
 \begin{equation}
 L(\lambda |y) = \prod\limits_{i = 1}^n {\frac{{{e^{ - \lambda }}{\lambda ^y}}}{{y!}}}  = \frac{{{e^{ - n\lambda }}{\lambda ^{\sum\limits_{i = 1}^n {{y_i}} }}}}{{\prod\limits_{i = 1}^n {y!} }}
@@ -148,18 +168,18 @@ Var(\lambda |y) &= \frac{\alpha }{{{\beta ^2}}} = \frac{{\sum {{y_i}}  + \alpha 
 
 ### (d)   Obtain the MLE of $\lambda$. Develop and discuss a relationship that exists between the MLE and posterior mean identified in (c).
 
-Starting from the Poisson distribution, $p(y|\lambda ) = \frac{{{e^{ - \lambda }}{\lambda ^y}}}{{y!}}$, we obtain the liklihood function:
+Starting from the Poisson distribution, $p(y|\lambda ) = \frac{{{e^{ - \lambda }}{\lambda ^y}}}{{y!}}$, we obtain the likelihood function:
 
 \begin{equation}
 L(\lambda |{y_1},{y_2},...,{y_n}) = \prod\limits_{i = 1}^n {\frac{{{e^{ - \lambda }}{\lambda ^{{y_i}}}}}{{{y_i}!}}} 
 \end{equation}
 
-Then, taking log of equation 6 and differnetiating w.r.t $\lambda$ we can obtain an expression for $\hat\lambda$:
+Then, taking log of equation 6 and differentiating w.r.t $\lambda$ we can obtain an expression for $\hat\lambda$:
 
 \begin{equation}
 \begin{gathered}
   \log L(\lambda |{x_1},{x_2},...,{x_n}) =  - n\lambda  - \sum\limits_{i = 1}^n {\log ({y_i}!) + \log (\lambda )\sum\limits_{i = 1}^n {{y_i}} }  \hfill \\
-  \frac{{\partial \log L( \cdot )}}{{\partial \lambda }} =  - n + \frac{{\sum\limits_{i = 1}^n {{y_i}} }}{\hat\lambda } = 0 \hfill \\
+  \frac{{\partial \log L( \cdot )}}{{\partial \lambda }} =  - n + \frac{{\sum\limits_{i = 1}^n {{y_i}} }}{\hat\lambda } \mathop  = \limits^{set}  0 \hfill \\
   \hat \lambda  = \frac{{\sum\limits_{i = 1}^n {{y_i}} }}{n} \hfill \\ 
 \end{gathered} 
 \end{equation}
@@ -172,41 +192,143 @@ We can now see that when the hyperparamaters of the posterior mean (part c, equa
 
 ```{r, echo=F}
 
-equalTail_CI <- function(y, a1, b1, alpha){
+# Equal Tail Credible Interval ------------------------------------------------
+equalTail_CI <- function(y, a0, b0, alpha=0.05, displayPlot=1){
   
-  n <- length(y)
-  qgamma(c(0.025, 0.975), a1, b1)
+  n= length(y)
+  a_posterior= a0+ n* mean(y)
+  b_posterior= b0+ n
+  critI <- qgamma(p=c(0.025, 0.975), shape= a0+ n* mean(y), rate= b0+ n)
+  
+    if(displayPlot==1){
+    th = seq(0, 10, length=1000)
+    
+    plot(th, dgamma(th, a_posterior, b_posterior),
+         t="l", lty=1,xlab=expression(lambda),
+         ylab="Posterior Density", 
+         col="blue")
+    #abline(h= h*dmode)
+    segments(critI[2], 0, critI[2], dgamma(critI[2], a_posterior, b_posterior),
+             col="red", lty=2)
+    segments(critI[1], 0, critI[1], dgamma(critI[1], a_posterior, b_posterior),
+             col="red", lty=2)
+    
+    title(main="Plot of Equal Tail Credible Interval")
+    mtext(bquote(paste("P(", .(round(critI[1], 4))," < ", Lambda, " < ",
+                       .(round(critI[2], 4)), " | " , y, ") = ",
+                       .(round(0.95, 4)))
+                       ), 3, line=0)
+    } else {}
+  
+  return(critI)
   
 }
 
+# HDP Credible Interval -------------------------------------------------------
+
+HPD.h = function(y, h=.1, a_posterior=a1, b_posterior=b1, displayPlot=0, ...){
+
+  if(a_posterior >= 1){
+    mode = (a_posterior - 1) / (b_posterior)
+    dmode = dgamma(mode, a_posterior, b_posterior)
+    } else {
+      print("Can not calculate mode. 
+            The b_posterior must be greater than or equal to zero!") 
+    }
+  
+  lt = uniroot(f=function(x){
+    dgamma(x, a_posterior, b_posterior) / dmode - h}, 
+    lower=0, 
+    upper=mode)$root
+  
+  ut = uniroot(f=function(x){ 
+    dgamma(x,a_posterior, b_posterior) / dmode - h}, 
+    lower=mode, 
+    upper=100)$root
+  
+  coverage = pgamma(ut, a_posterior, b_posterior) - 
+    pgamma(lt, a_posterior, b_posterior)
+  
+  if(displayPlot==1){
+    th = seq(0, 10, length=1000)
+    
+    plot(th, dgamma(th, a_posterior, b_posterior),
+         t="l", lty=1,xlab=expression(lambda),
+         ylab="Posterior Density", 
+         col="blue")
+    #abline(h= h*dmode)
+    segments(ut, 0, ut, dgamma(ut, a_posterior, b_posterior), col="red")
+    segments(lt, 0, lt, dgamma(lt, a_posterior, b_posterior), col="red")
+    
+    title(main="Plot of HPD Credible Interval")
+    mtext(bquote(paste("P(", .(round(lt, 4))," < ", Lambda, " < ",
+                       .(round(ut, 4)), " | " , y, ") = ",
+                       .(round(coverage, 4)))
+                       ), 3, line=0)
+  } else {}
+  
+  return(c(lt, ut, coverage, h))
+  
+}
+
+HPD = function(h, y, alpha){
+  cov = HPD.h(y, h = h)[3]
+  res = (cov - (1 - alpha))^2
+  return(res)
+}
+
+
 ```
 
-Please see Appendix
+Please see Appendix A
 
 
 ### (f)  Find a data set which could be appropriately analyzed using the Poisson model. This data set should be of interest to you, and you should discuss, briefly, why the aforementioned model is appropriate; e.g., consider independence, identically distributed, etc. etc. You will also need to provide the source of the data.
 
 ```{r echo=F, fig.height=3.5}
 
-par(mfrow=c(1,2), ps = 10, cex = 0.75, cex.main = 1)
+par(mfrow=c(1,1), ps = 10, cex = 0.75, cex.main = 1)
 
 plot(x = mainData[,1], y = mainData[,2], type="l", 
      main="Unit of Beer Sold per Week", 
      xlab="Week", 
      ylab="Units")
 
-hist(mainData[,2], main="Histogram of Unit of Beer Sold per Week")
+#hist(mainData[,2], main="Histogram of Unit of Beer Sold per Week")
 
 ```
 
+In this study I will use a Poisson model to analyze market level data for beer. A market is defined in the follow way: units of beer sold per week during 2010 in Los Angeles, California over a 52 week period at the chain/brand level. The market level sales data are obtained from Information Resource Inc. (IRI) and consist of all dollar by volume sales for a brand of beer at a specific chain during a one week period. In this data set there are seven chains represented in Los Angeles; I have chosen a single chain for this analysis. The chain name is masked for privacy. The brand is a California craft brew named Anchor Steam Beer. The brewery is located in San Francisco, California and has a total annual production output of 132,000 barrels.  
+  
+Given the count nature of this data, using a Poisson model is appropriate. Assuming independent and identically distributed data is reasonable since there is no expectation that aggregate beer sales from one week to the next should be related in any meaningful way. Of course this assumption is not very hard to counter with some thought but I will assume iid data in this analysis.
+  
+A single unit of beer consists of 6 - 12 ounce bottles of Anchor Steam Beer.  
+  
+See Appendix B for data.
 
+\bigskip
+\bigskip
+\bigskip
+
+```{r echo=F, fig.height=3.5}
+
+par(mfrow=c(1,1), ps = 10, cex = 0.75, cex.main = 1)
+
+# plot(x = mainData[,1], y = mainData[,2], type="l", 
+#      main="Unit of Beer Sold per Week", 
+#      xlab="Week", 
+#      ylab="Units")
+
+hist(mainData[,2], main="Histogram of Unit of Beer Sold per Week", 
+     xlab="Week")
+
+```
 
 ### (g)  Analyze the data set you have selected in (e). Provide posterior point estimates of $\lambda$, credible intervals, etc. etc. Your analysis should be accompanied by an appropriate discussion of your findings.
 
 ```{r, echo=F, fig.height=7}
 
 par(mfrow=c(2,2), ps = 10, cex = 0.75, cex.main = 1)
-
 
 # Beer data -------------------------------------------------------------------
 sum_y = sum(mainData$units)
@@ -230,7 +352,7 @@ priorpmf.grid = dgamma(grid, shape= a0, rate= b0)
 # Plot Prior ------------------------------------------------------------------
 plot(grid, priorpmf.grid,
      col='red', type="l", 
-     main="Prior Density", xlab=expression(lambda), ylab="density")
+     main="Prior Density", xlab=expression(lambda), ylab="Prior Density")
 
 lines(density(mainData$units), lty=2)
 
@@ -253,7 +375,7 @@ posteriorpmf.grid=dgamma(grid,shape= a1, rate= b1)
 
 # Plot Posterior --------------------------------------------------------------
 plot(grid, posteriorpmf.grid,
-     main="Posterior Density",  ylab="density", col='blue', type="l",
+     main="Posterior Density",  ylab="Posterior Density", col='blue', type="l",
      xlab=expression(lambda))
 
 # Plot densities together -----------------------------------------------------
@@ -272,26 +394,128 @@ lines(grid, 20*likelihood.grid, col="green") # liklihood
 legend(10, 1.35,  c("Prior", "Data", "Likelihood", "Posterior"), 
        lty=c(1,2,1, 1), col=c("red", "black", "green", "blue"))
 
+```
 
+```{r, echo=F, fig.height=4}
 posterior.mean = a1/b1
 posterior.var = a1/b1^2
 
-qgamma(c(0.025, 0.975), a1, b1)
+par(mfrow=c(1,2), ps= 10, cex= 1, cex.main= 1)
+
+eTailOutput <- equalTail_CI(y=mainData$units, a0=a0, b0=b0)
+
+h.final= optimize(HPD, c(0, 1), y= y, alpha = 0.05)$minimum
+hpdOutput <- HPD.h(y= mainData$units, h= h.final, displayPlot= 1)
 
 ```
 
 
+
 \newpage
 
-# Appendix - Code for Problem 1, part e.
-
-R code for the Equal Tail Credible Interval:
+# Appendix A - Code for Problem 1, part e.
 
 \begin{verbatim}
-equalTail_CI <- function(y, a1, b1, alpha){
+
+
+# Equal Tail Credible Interval ------------------------------------------------
+equalTail_CI <- function(y, a0, b0, alpha=0.05, displayPlot=1){
   
-  n <- length(y)
-  qgamma(c(0.025, 0.975), a1, b1)
+  n= length(y)
+  a_posterior= a0+ n* mean(y)
+  b_posterior= b0+ n
+  critI <- qgamma(p=c(0.025, 0.975), shape= a0+ n* mean(y), rate= b0+ n)
+  
+    if(displayPlot==1){
+    th = seq(0, 10, length=1000)
+    
+    plot(th, dgamma(th, a_posterior, b_posterior),
+         t="l", lty=1,xlab=expression(lambda),
+         ylab="Posterior Density", 
+         col="blue")
+    #abline(h= h*dmode)
+    segments(critI[2], 0, critI[2], dgamma(critI[2], a_posterior, b_posterior),
+             col="red", lty=2)
+    segments(critI[1], 0, critI[1], dgamma(critI[1], a_posterior, b_posterior),
+             col="red", lty=2)
+    
+    title(main="Plot of Equal Tail Credible Interval")
+    mtext(bquote(paste("P(", .(round(critI[1], 4))," < ", Lambda, " < ",
+                       .(round(critI[2], 4)), " | " , y, ") = ",
+                       .(round(0.95, 4)))
+                       ), 3, line=0)
+    } else {}
+  
+  return(critI)
   
 }
+
+# HDP Credible Interval -------------------------------------------------------
+
+HPD.h = function(y, h=.1, a_posterior=a1, b_posterior=b1, displayPlot=0, ...){
+
+  if(a_posterior >= 1){
+    mode = (a_posterior - 1) / (b_posterior)
+    dmode = dgamma(mode, a_posterior, b_posterior)
+    } else {
+      print("Can not calculate mode. 
+            The b_posterior must be greater than or equal to zero!") 
+    }
+  
+  lt = uniroot(f=function(x){
+    dgamma(x, a_posterior, b_posterior) / dmode - h}, 
+    lower=0, 
+    upper=mode)$root
+  
+  ut = uniroot(f=function(x){ 
+    dgamma(x,a_posterior, b_posterior) / dmode - h}, 
+    lower=mode, 
+    upper=100)$root
+  
+  coverage = pgamma(ut, a_posterior, b_posterior) - 
+    pgamma(lt, a_posterior, b_posterior)
+  
+  if(displayPlot==1){
+    th = seq(0, 10, length=1000)
+    
+    plot(th, dgamma(th, a_posterior, b_posterior),
+         t="l", lty=1,xlab=expression(lambda),
+         ylab="Posterior Density", 
+         col="blue")
+    #abline(h= h*dmode)
+    segments(ut, 0, ut, dgamma(ut, a_posterior, b_posterior), col="red")
+    segments(lt, 0, lt, dgamma(lt, a_posterior, b_posterior), col="red")
+    
+    title(main="Plot of HPD Credible Interval")
+    mtext(bquote(paste("P(", .(round(lt, 4))," < ", Lambda, " < ",
+                       .(round(ut, 4)), " | " , y, ") = ",
+                       .(round(coverage, 4)))
+                       ), 3, line=0)
+  } else {}
+  
+  return(c(lt, ut, coverage, h))
+  
+}
+
+HPD = function(h, y, alpha){
+  cov = HPD.h(y, h = h)[3]
+  res = (cov - (1 - alpha))^2
+  return(res)
+}
+
+
 \end{verbatim}
+
+\newpage
+
+# Appendix B - Data
+
+```{r, echo=FALSE, message=FALSE, results='asis', fig.height=3, results='asis'}
+
+stargazer(mainData[,c(1,2,4)], header=F, type="latex", summary= FALSE, 
+          rownames= FALSE, font.size = "scriptsize", 
+          title="Data", 
+          notes = "Units of Anchor Steam Beer sold in Los Angeles, CA (2010)")
+
+```
+
