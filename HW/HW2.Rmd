@@ -47,6 +47,7 @@ In this problem we will explore an alternate class of priors.
 
 
 
+\newpage
 
 # Problem 2
 
@@ -56,12 +57,33 @@ Let ${X_1} \sim N({\mu _1},\sigma _1^2)$ and ${X_2} \sim N({\mu _2},\sigma _2^2)
 
 
 
-
 ### (b) Approach 1: Consider using Monte Carlo sampling to obtain a histogram and kernel density estimate (see the code that I have provided) of the pdf of $Y$ by directly sampling both $X_1$ and $X_2$. Over plot the true density of $Y$ and comment. Note, you should make use of large enough Monte Carlo sample that your results are reasonable.
-
 
 
 
 ### (c) Approach 2: Note, the distribution of $Y$ can also be obtained through the convolution of the probability distributions of $X_1$ and $X_2$. Sketch out theoretically how this would be done. Based on this idea, create a Monte Carlo sampling technique which can be used to approximate the pdf of $Y$ evaluated at any point in the support. Use this function and add the approximation based on this technique to the Figure described in the part (b) above.
 
+
+
+### (d) Repeat the two approaches described in (b) and (c) above for ${X_1} \sim Gamma({\alpha _1},{\beta _1})$ and ${X_2} \sim Gamma({\alpha _2},{\beta _2})$. Note, unless $\beta_1$ = $\beta_2$, the resulting distribution of $Y$ is not friendly. Also be cautious of the support.
+
+
+
+\newpage
+
+# Problem 3
+
+Game of chance, the game of craps and a betting strategy are going to be explored in this Monte Carlo simulation experiment.
+
+### (a) Do a search and outline the rules of craps.
+
+
+
+
+### (b) Your initial bet will be 10 dollars. The return on any bet will be the amount that you bet; e.g., if you bet 10 dollars and win, then you win 10 dollars. You are going to play exactly 10 games of craps. If you lose on the previous game, your next bet requires you to “double down,” that is, if on one game you bet X dollars and lose, on the next game you have to bet 2X dollars. If you win on the previous game, your next bet will be 10 dollars.
+
+
+
+
+### (c) Write a Monte Carol simulation to find your expected winnings after the 10 games. Also examine the distribution of your expected winnings. Does it appear that this is a good betting strategy?
 
