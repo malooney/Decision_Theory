@@ -2,12 +2,12 @@
 title: "STAT 5370 – Decision Theory"
 subtitle: "Homework 1"
 author: "Matthew Aaron Looney"
-date: "6/9/2018"
+date: "6/15/2018"
 output: 
   pdf_document: 
+    fig_caption: yes
     toc: yes
     toc_depth: 4
-    
 header-includes:
 - \usepackage{graphicx}
 - \usepackage{rotating}
@@ -17,7 +17,6 @@ header-includes:
 - \usepackage{setspace}
 - \usepackage{mathrsfs}
 - \usepackage{eso-pic,graphicx,transparent}
-
 fontsize: 12pt
 geometry: margin = 1.25in
 ---
@@ -285,7 +284,7 @@ Please see Appendix A
 
 ### (f)  Find a data set which could be appropriately analyzed using the Poisson model. This data set should be of interest to you, and you should discuss, briefly, why the aforementioned model is appropriate; e.g., consider independence, identically distributed, etc. etc. You will also need to provide the source of the data.
 
-```{r echo=F, fig.height=3.5}
+```{r echo=F, fig.height=3.5, fig.cap="\\label{fig:figs}"}
 
 par(mfrow=c(1,1), ps = 10, cex = 0.75, cex.main = 1)
 
@@ -304,13 +303,13 @@ Given the count nature of this data, using a Poisson model is appropriate. Assum
   
 A single unit of beer consists of 6 - 12 ounce bottles of Anchor Steam Beer.  
   
-See Appendix B for data.
+See Appendix B for data. Raw data available upon request.
 
 \bigskip
 \bigskip
 \bigskip
 
-```{r echo=F, fig.height=3.5}
+```{r echo=F, fig.height=3.5, fig.cap="\\label{fig:figs}"}
 
 par(mfrow=c(1,1), ps = 10, cex = 0.75, cex.main = 1)
 
@@ -326,9 +325,7 @@ hist(mainData[,2], main="Histogram of Unit of Beer Sold per Week",
 
 ### (g)  Analyze the data set you have selected in (e). Provide posterior point estimates of $\lambda$, credible intervals, etc. etc. Your analysis should be accompanied by an appropriate discussion of your findings.
 
-```{r, echo=F, fig.height=7}
-
-par(mfrow=c(2,2), ps = 10, cex = 0.75, cex.main = 1)
+```{r, echo=F, warning=F, message=F}
 
 # Beer data -------------------------------------------------------------------
 sum_y = sum(mainData$units)
@@ -342,6 +339,51 @@ sigma2_0 <-8
 
 b0 <- mu_0 / sigma2_0
 a0 <- mu_0 * b0
+
+# posterior parameters --------------------------------------------------------
+a1= a0 + sum_y
+b1 = b0 + n
+
+posterior.mean = a1/b1
+posterior.var = a1/b1^2
+
+h.final= optimize(HPD, c(0, 1), y= y, alpha = 0.05)$minimum
+hpdOutput <- HPD.h(y= mainData$units, h= h.final, displayPlot= 0)
+
+```
+
+The conjugate prior for a Poisson model is the Gamma distribution (equation 4). Using the conjugate prior and the likelihood function we have derived the posterior mean and variance (equation 5). We can use these previously derived equations to obtain the insight into our data set on beer sales.  
+  
+The hyperparameters for the Gamma prior were set at $\alpha_0=2$, $\beta_0=0.5$. These parameters were chosen based on the density plot of the data and the overlay of the shape of the Gamma distribution using the choice of hyperparamaters (see figure 3). The choice of hyperparamater had little effect on the posterior mean and variance.
+
+Then the posterior mean and variance  of $\lambda|y$ is:
+
+\begin{equation}
+\begin{aligned}
+E(\lambda |y) &= \frac{\alpha }{\beta } = \frac{{\sum {{y_i}}  + \alpha }}{{n + \beta }} =`r posterior.mean ` \\
+Var(\lambda |y) &= \frac{\alpha }{{{\beta ^2}}} = \frac{{\sum {{y_i}}  + \alpha }}{{{{(n + \beta )}^2}}} = `r posterior.var `
+\end{aligned}
+\end{equation}
+
+Given the data the calculated posterior mean is a very reasonable estimate.  
+  
+We can calculate the Equal Tail Credible Intervals and the HPD Credible Intervals to determine the 95% probability that $\lambda$ falls within some upper and lower bound.  
+  
+The Equal Tail Credible Intervals is [`r equalTail_CI(y=mainData$units, a0=a0, b0=b0, displayPlot=0) `] (see plot - Figure 4).
+
+The HPD Credible Intervals is [`r HPD.h(y= mainData$units, h= h.final, displayPlot= 0) `] (see plot - Figure 4).
+
+By evaluating the credible Intervals we notice that they are very close. We can say that there is a 95% probability that the true value is $\lambda$ is between [`r HPD.h(y= mainData$units, h= h.final, displayPlot= 0) `]. Further, we can conclude that on average we can expect to see `r posterior.mean ` units of beer sold per week during 2010 in Los Angeles, California over a 52 week period at the chain/brand level.  
+  
+The mean estimate is limited since it is only based of past data and does not account for future uncertainty. A forecasting study would be needed to gain more insight into how future sales might look in this market.
+
+
+
+```{r, echo=F, fig.height=7, fig.cap="\\label{fig:figs}"}
+
+par(mfrow=c(2,2), ps = 10, cex = 0.75, cex.main = 1)
+
+# Plot paramaters -------------------------------------------------------------
 
 grid = seq(0.1, 20, length=10000)
 
@@ -367,13 +409,8 @@ plot(x = grid, y = likelihood.grid,
      xlab=  expression(lambda), 
      ylab= expression(L(lambda)))
 
-# posterior parameters --------------------------------------------------------
-a1= a0 + sum_y
-b1 = b0 + n
-
-posteriorpmf.grid=dgamma(grid,shape= a1, rate= b1)
-
 # Plot Posterior --------------------------------------------------------------
+posteriorpmf.grid=dgamma(grid,shape= a1, rate= b1)
 plot(grid, posteriorpmf.grid,
      main="Posterior Density",  ylab="Posterior Density", col='blue', type="l",
      xlab=expression(lambda))
@@ -396,13 +433,11 @@ legend(10, 1.35,  c("Prior", "Data", "Likelihood", "Posterior"),
 
 ```
 
-```{r, echo=F, fig.height=4}
-posterior.mean = a1/b1
-posterior.var = a1/b1^2
+```{r, echo=F, fig.height=4, fig.cap="\\label{fig:figs}"}
 
 par(mfrow=c(1,2), ps= 10, cex= 1, cex.main= 1)
 
-eTailOutput <- equalTail_CI(y=mainData$units, a0=a0, b0=b0)
+eTailOutput <- equalTail_CI(y=mainData$units, a0=a0, b0=b0, displayPlot=1)
 
 h.final= optimize(HPD, c(0, 1), y= y, alpha = 0.05)$minimum
 hpdOutput <- HPD.h(y= mainData$units, h= h.final, displayPlot= 1)

@@ -1,0 +1,67 @@
+---
+title: "STAT 5370 – Decision Theory"
+subtitle: "Homework 2"
+author: "Matthew Aaron Looney"
+date: "6/22/2018"
+output: 
+  pdf_document: 
+    fig_caption: yes
+    toc: yes
+    toc_depth: 4
+header-includes:
+- \usepackage{graphicx}
+- \usepackage{rotating}
+- \usepackage{longtable}
+- \usepackage{amssymb,amsmath}
+- \usepackage{dcolumn}
+- \usepackage{setspace}
+- \usepackage{mathrsfs}
+- \usepackage{eso-pic,graphicx,transparent}
+fontsize: 10pt
+geometry: margin = 1.25in
+---
+
+\newpage
+
+\onehalfspacing
+
+# Problem 1
+
+In this problem we will explore an alternate class of priors.
+
+### (a) Find a resource and write a basic description of what a Jeffrey’s prior is. Be thorough, your exposition here needs to be such that someone who knows nothing of what a Jeffrey’s prior is could learn the salient features. Identify why people like Jeffery’s priors and discuss drawbacks.
+
+
+
+### (b) Derive the Jeffery’s prior for the Bernoulli model (i.e., assuming ${Y_i}\mathop  = \limits^{iid} Bernoulli(p)$), and find the posterior distribution of $p$ under this prior. Is it a known distribution? Discuss how you would proceed to conduct posterior inference.
+
+
+
+
+### (c) Derive the Jeffery’s prior for the Poisson model (i.e., assuming ${Y_i}\mathop  = \limits^{iid} Poisson(\lambda)$), and find the posterior distribution of $\lambda$ under this prior. Is it a known distribution? Discuss how you would proceed to conduct posterior inference.
+
+
+
+
+### (d) Derive the Jeffery’s prior for the exponential model (i.e., assuming ${Y_i}\mathop  = \limits^{iid} Exponential(\beta)$), and find the posterior distribution of $\beta$ under this prior. Is it a known distribution? Discuss how you would proceed to conduct posterior inference.
+
+
+
+
+# Problem 2
+
+Let ${X_1} \sim N({\mu _1},\sigma _1^2)$ and ${X_2} \sim N({\mu _2},\sigma _2^2)$ such that $X_1$ and $X_2$ are independent. Define $Y = {X_1} + {X_2}$. The goal of this problem is to determine the distribution of $Y$; i.e., the sum of two independent normal random variables.
+
+### (a) Obviously, this is trivial, so simply state the distribution of $Y$.
+
+
+
+
+### (b) Approach 1: Consider using Monte Carlo sampling to obtain a histogram and kernel density estimate (see the code that I have provided) of the pdf of $Y$ by directly sampling both $X_1$ and $X_2$. Over plot the true density of $Y$ and comment. Note, you should make use of large enough Monte Carlo sample that your results are reasonable.
+
+
+
+
+### (c) Approach 2: Note, the distribution of $Y$ can also be obtained through the convolution of the probability distributions of $X_1$ and $X_2$. Sketch out theoretically how this would be done. Based on this idea, create a Monte Carlo sampling technique which can be used to approximate the pdf of $Y$ evaluated at any point in the support. Use this function and add the approximation based on this technique to the Figure described in the part (b) above.
+
+
