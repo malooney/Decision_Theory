@@ -17,6 +17,9 @@ header-includes:
 - \usepackage{setspace}
 - \usepackage{mathrsfs}
 - \usepackage{eso-pic,graphicx,transparent}
+
+- \DeclareMathOperator{\EX}{\mathbb{E}}
+
 fontsize: 10pt
 geometry: margin = 1.25in
 ---
@@ -30,9 +33,10 @@ cat("\014")
 
 ```
 
+
 \newpage
 
-\onehalfspacing
+<!-- \onehalfspacing -->
 
 # Problem 1
 
@@ -43,6 +47,18 @@ In this problem we will explore an alternate class of priors.
 
 
 ### (b) Derive the Jeffery’s prior for the Bernoulli model (i.e., assuming ${Y_i}\mathop  = \limits^{iid} Bernoulli(p)$), and find the posterior distribution of $p$ under this prior. Is it a known distribution? Discuss how you would proceed to conduct posterior inference.
+
+Assuming ${Y_i}\mathop  = \limits^{iid} Bernoulli(p)$, then we can say that $Y|p \sim Binomial(n,p)$ and we can obtain the liklehood function as:
+
+$$L(p|Y) = \prod\limits_{i = 1}^n {{p^{{y_i}}}{{(1 - p)}^{1 - {y_i}}} = {p^{\sum\nolimits_{i = 1}^n {{y_i}} }}{{(1 - p)}^{\sum\nolimits_{i = 1}^n {(1 - {y_i})} }}}  = {p^{\sum\nolimits_{i = 1}^n {{y_i}} }}{(1 - p)^{n - \sum\nolimits_{i = 1}^n {{y_i}} }}$$
+Letting $k={\sum\nolimits_{i = 1}^n {{y_i}} }$ we obtain the log liklehood as:
+
+$$\log L(p|Y) = k\log (p) + (n - k)\log (1 - p)$$
+
+The next step in the derivation of the jeffreys Prior is to calculate the Fisher information matirx. We are told the data is iid and we can see that the log liklehood function is twice differentiable which allows us to use an alternative form of the Fisher information matrix. Further, calculation is vastly simplified since our liklehood function is low dimensinal (single paramater). The Fisher information is given by the following:
+
+$${\bf{I}_{j,k}}(\boldsymbol{\theta}) =  - \EX_{\bf{y}|\theta}\left[ {{{{\partial ^2}\log L(\bf{y}|\boldsymbol{\theta})} \over {\partial {\theta _j}\partial {\theta _k}}}} \right]$$
+
 
 
 
@@ -96,6 +112,13 @@ Game of chance, the game of craps and a betting strategy are going to be explore
 
 ### (c) Write a Monte Carol simulation to find your expected winnings after the 10 games. Also examine the distribution of your expected winnings. Does it appear that this is a good betting strategy?
 
+
+
+
+
+
+
+$$Y|p \sim Binomial(n,p)$$
 
 
 
