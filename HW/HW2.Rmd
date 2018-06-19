@@ -21,6 +21,15 @@ fontsize: 10pt
 geometry: margin = 1.25in
 ---
 
+```{r, echo=F, warning=F, message=F, cache=F}
+
+# Housekeeping ----------------------------------------------------------------
+rm(list=ls())
+cat("\014")
+
+
+```
+
 \newpage
 
 \onehalfspacing
@@ -86,4 +95,7 @@ Game of chance, the game of craps and a betting strategy are going to be explore
 
 
 ### (c) Write a Monte Carol simulation to find your expected winnings after the 10 games. Also examine the distribution of your expected winnings. Does it appear that this is a good betting strategy?
+
+
+
 
