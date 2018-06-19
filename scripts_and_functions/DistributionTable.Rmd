@@ -1,0 +1,60 @@
+---
+# title: "STAT 5370 – Decision Theory"
+# subtitle: "Notes"
+# author: "Matthew Aaron Looney"
+# date: "6/15/2018"
+output: 
+  pdf_document: 
+    fig_caption: No
+    toc: No
+    toc_depth: 4
+header-includes:
+- \usepackage{graphicx}
+- \usepackage{rotating}
+- \usepackage{longtable}
+- \usepackage{amssymb,amsmath}
+- \usepackage{dcolumn}
+- \usepackage{setspace}
+- \usepackage{mathrsfs}
+- \usepackage{eso-pic,graphicx,transparent}
+- \usepackage{pdflscape}
+
+fontsize: 10pt
+geometry: margin = 0.5in
+---
+
+
+\tiny
+\begin{landscape}
+\begin{tabular}{ c c c c c c c c c c }
+  Distribution & Parameters & CDF & PMF/PDF & Support & Mean & Median & Mode & Variance & MGF \\ \hline \\
+  
+  Bernoulli & 
+  $0<p<1,p\in \mathbb {R}$ &
+  ${\displaystyle {\begin{cases}0&{\text{for }}k<0\\1-p&{\text{for }}0\leq k<1\\1&{\text{for }}k\geq 1\end{cases}}}$ & 
+  ${\begin{cases}q=(1-p)&{\text{for }}k=0\\p&{\text{for }}k=1\end{cases}}$ & 
+  $k\in \{0,1\}$ & 
+  $p$ & 
+  ${\begin{cases}0&{\text{if }}q>p\\0.5&{\text{if }}q=p\\1&{\text{if }}q<p\end{cases}}$ & 
+  ${\begin{cases}0&{\text{if }}q>p\\0,1&{\text{if }}q=p\\1&{\text{if }}q<p\end{cases}}$ & 
+  $p(1-p)(=pq)\,$ & 
+  $q+pe^{t}\,$  \\ \hline \\
+  Binomial & 
+  $n \in N_0$; $p \in [o,1]$ & 
+  $\textstyle I_{1-p}(n-k,1+k)$ & 
+  $\textstyle {n \choose k}\,p^{k}(1-p)^{n-k}$ & 
+  $k \in \{0,...,n\}$ & 
+  $np$ & 
+  $\lfloor np\rfloor or \lceil np\rceil$ & 
+  $\lfloor (n+1)p\rfloor or {\displaystyle \lceil (n+1)p\rceil -1}$ & 
+  $np(1-p)$ & 
+  $(1-p+pe^{t})^{n}\!$ \\ \hline \\
+  Poisson & 
+  $\lambda > 0$ (real) - rate & 
+  ${\frac {\Gamma (\lfloor k+1\rfloor ,\lambda )}{\lfloor k\rfloor !}}$, or ${\displaystyle e^{-\lambda }\sum _{i=0}^{\lfloor k\rfloor }{\frac {\lambda ^{i}}{i!}}\ }$ & 
+  ${\displaystyle {\frac {\lambda ^{k}e^{-\lambda }}{k!}}}$ & 
+  ${\displaystyle k\in \mathbb {N} \cup \{0\}};$\\ \hline \hline \\
+  
+  
+\end{tabular}
+\end{landscape}

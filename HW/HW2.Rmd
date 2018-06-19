@@ -18,8 +18,6 @@ header-includes:
 - \usepackage{mathrsfs}
 - \usepackage{eso-pic,graphicx,transparent}
 
-- \DeclareMathOperator{\EX}{\mathbb{E}}
-
 fontsize: 10pt
 geometry: margin = 1.25in
 ---
@@ -57,7 +55,7 @@ $$\log L(p|Y) = k\log (p) + (n - k)\log (1 - p)$$
 
 The next step in the derivation of the jeffreys Prior is to calculate the Fisher information matirx. We are told the data is iid and we can see that the log liklehood function is twice differentiable which allows us to use an alternative form of the Fisher information matrix. Further, calculation is vastly simplified since our liklehood function is low dimensinal (single paramater). The Fisher information is given by the following:
 
-$${\bf{I}_{j,k}}(\boldsymbol{\theta}) =  - \EX_{\bf{y}|\theta}\left[ {{{{\partial ^2}\log L(\bf{y}|\boldsymbol{\theta})} \over {\partial {\theta _j}\partial {\theta _k}}}} \right]$$
+$${\bf{I}_{j,k}}(\boldsymbol{\theta}) =  - \mathbb{E}_{\bf{y}|\theta}\left[ {{{{\partial ^2}\log L(\bf{y}|\boldsymbol{\theta})} \over {\partial {\theta _j}\partial {\theta _k}}}} \right]$$
 
 
 
@@ -118,7 +116,6 @@ Game of chance, the game of craps and a betting strategy are going to be explore
 
 
 
-$$Y|p \sim Binomial(n,p)$$
 
 
 
