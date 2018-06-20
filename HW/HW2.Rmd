@@ -17,7 +17,6 @@ header-includes:
 - \usepackage{setspace}
 - \usepackage{mathrsfs}
 - \usepackage{eso-pic,graphicx,transparent}
-
 fontsize: 10pt
 geometry: margin = 1.25in
 ---
@@ -53,7 +52,7 @@ Letting $k={\sum\nolimits_{i = 1}^n {{y_i}} }$ we obtain the log likelihood as:
 
 $$\log L(p|Y) = k\log (p) + (n - k)\log (1 - p)$$
 
-The next step in the derivation of the jeffreys Prior is to calculate the Fisher information matrix. We are told the data is iid and we can see that the log likelihood function is twice differentiable which allows us to use an alternative form of the Fisher information matrix. Further, calculation is vastly simplified since our likelihood function is low dimensional (single parameter). The Fisher information is given by the following:
+The next step in the derivation of the Jeffreys Prior is to calculate the Fisher information matrix. We are told the data are iid and we can see that the log likelihood function is twice differentiable which allows us to use an alternative form of the Fisher information matrix. Further, calculation is vastly simplified since our likelihood function is low dimensional (single parameter). The Fisher information is given by the following:
 
 \begin{equation}
 \tag{General}
@@ -95,9 +94,9 @@ p(\theta |y) = \frac{{p(y|\theta )p(\theta )}}{{\int\limits_A {p(y|\theta )p(\th
 \end{split}
 \end{equation}
 
-If we let ${\sum\nolimits_{i = 1}^n {{y_i}} }= n \bar{Y}$ then the posterior distribution is $Beta(\overbrace {n\bar Y + 0.5}^\alpha,\overbrace {n - n\bar Y + 0.5}^\beta)$, where $\alpha$ and $\beta$ are the hyperparameters of the Beta distribution and $\alpha>0$ (first shape parameter), $\beta>0$ (second shape parameter).
+If we let ${\sum\nolimits_{i = 1}^n {{y_i}} }= n \bar{Y}$ then the posterior distribution is $Beta(\overbrace {n\bar Y + 0.5}^\alpha,\overbrace {n - n\bar Y + 0.5}^\beta)$, where $\alpha$ and $\beta$ are the parameters of the Beta distribution and $\alpha>0$ (first shape parameter), $\beta>0$ (second shape parameter).
 
-The Beta distribution is well known with all of the most relevant moments documented. We can obtain the posterior mean and variance by applying the following formulas and making the appropriate substitutions of the posterior distributions hyperparameters:
+The Beta distribution is well known with all of the most relevant moments documented. We can obtain the posterior mean and variance by applying the following formulas and making the appropriate substitutions of the posterior distributions parameters:
 
 \begin{equation}
 \begin{split}
@@ -112,10 +111,116 @@ We can also calculate the Equal Tail Credible Intervals and the HPD Credible Int
 
 ### (c) Derive the Jeffery’s prior for the Poisson model (i.e., assuming ${Y_i}\mathop  = \limits^{iid} Poisson(\lambda)$), and find the posterior distribution of $\lambda$ under this prior. Is it a known distribution? Discuss how you would proceed to conduct posterior inference.
 
+Assuming ${Y_i}\mathop  = \limits^{iid} Poisson(\lambda)$, then we can say that $Y|\lambda \sim Poisson(\lambda)$ and we can obtain the likelihood function as:
 
+$$
+L(\lambda |y) = \prod\limits_{i = 1}^n {{{{e^{ - \lambda }}{\lambda ^y}} \over {y!}}}  = {{{e^{ - n\lambda }}{\lambda ^{\sum\limits_{i = 1}^n {{y_i}} }}} \over {\prod\limits_{i = 1}^n {y!} }} \propto {e^{ - n\lambda }}{\lambda ^{\sum\limits_{i = 1}^n {{y_i}} }}
+$$
+Letting $k={\sum\nolimits_{i = 1}^n {{y_i}} }$ we obtain the log likelihood as:
+
+$$\log L(\lambda |Y) =  - n\lambda  + k\log (\lambda )$$
+
+The next step in the derivation of the Jeffreys Prior is to calculate the Fisher information matrix. We are told the data are iid and we can see that the log likelihood function is twice differentiable which allows us to use an alternative form of the Fisher information matrix. Further, calculation is vastly simplified since our likelihood function is low dimensional (single parameter). The Fisher information is given by the following:
+
+\begin{equation}
+\tag{General}
+{\bf{I}_{j,k}}(\boldsymbol{\theta}) =  - \mathbb{E}_{\bf{y}|\theta}\left[ {{{{\partial ^2}\log L(\bf{y}|\boldsymbol{\theta})} \over {\partial {\theta _j}\partial {\theta _k}}}} \right]
+\end{equation}
+
+\begin{equation}
+\bf{I}(\lambda) = - \frac{\mathbb{E}[k]}{\lambda^2}
+\end{equation}
+
+Recalling that $Y|\lambda \sim Poisson(\lambda)$ and we defined $k$ as ${\sum\nolimits_{i = 1}^n {{y_i}} }=n\bar{Y}$, then $n\mathbb{E}[\bar{Y}]=n\lambda$ and we obtain the following results:
+
+$$\bf{I}(\lambda)=\frac{n}{\lambda}$$
+The Jefferys prior is defined as:
+
+\begin{equation}
+\tag{General}
+\pi(\theta) \propto \sqrt{det|\bf{I{(\theta)}}|}
+\end{equation}
+
+\begin{equation}
+\pi(\lambda) \propto \sqrt{det|\bf{I{(\lambda)}}|} \propto \lambda^{-0.5}
+\end{equation}
+
+We recognize that equation 6 can be made to look like a Gamma distribution by subtracting one from the power on $\lambda$ to obtain $\pi(\lambda) \propto \lambda^{0.5-1}e^0$ and we now have the Jeffrys prior which is $Gamma(\frac{1}{2}, 0)$.
+
+With the non-informative Jefferys prior in hand we can proceed to build the posterior distribution in the usual way which gives:
+
+\begin{equation}
+\tag{General}
+p(\theta |y) = \frac{{p(y|\theta )p(\theta )}}{{\int\limits_A {p(y|\theta )p(\theta )d\theta } }} \propto \underbrace {p(y|\theta )}_{{\text{L(}}\theta {\text{)}}}\underbrace {p(\theta )}_{{\text{Prior}}}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+\pi (\lambda|y) &= {e^{ - n\lambda }}{\lambda ^{\sum\nolimits_{i = 1}^n {{y_i}} }} \cdot {e^0}{\lambda ^{0.5 - 1}} \\
+& = {\lambda ^{\sum\nolimits_{i = 1}^n {{y_i}}  + 0.5 - 1}}{e^{ - n\lambda }}
+\end{split}
+\end{equation}
+
+If we let ${\sum\nolimits_{i = 1}^n {{y_i}} }= n \bar{Y}$ then the posterior distribution is $Gamma(\overbrace {n\bar Y + 0.5}^\alpha,\overbrace {n}^\beta)$, where $\alpha$ and $\beta$ are the parameters of the Gamma distribution and $\alpha>0$ (shape parameter), $\beta>0$ (rate parameter).
+
+The Gamma distribution is well known with all of the most relevant moments documented. We can obtain the posterior mean and variance by applying the following formulas and making the appropriate substitutions of the posterior distributions parameters:
+
+\begin{equation}
+\begin{split}
+\mathbb{E}[\lambda|y] &= {\alpha  \over \beta } \\
+Var(\lambda |y) &= {\alpha  \over \beta ^2}
+\end{split}
+\end{equation}
+
+We can also calculate the Equal Tail Credible Intervals and the HPD Credible Intervals to determine the 95% probability that $\lambda$ falls within some upper and lower bound.
 
 
 ### (d) Derive the Jeffery’s prior for the exponential model (i.e., assuming ${Y_i}\mathop  = \limits^{iid} Exponential(\beta)$), and find the posterior distribution of $\beta$ under this prior. Is it a known distribution? Discuss how you would proceed to conduct posterior inference.
+
+Assuming ${Y_i}\mathop  = \limits^{iid} Exponential(\beta)$, then we can say that $Y|\beta \sim Exponential(\beta)$ and we can obtain the likelihood function as:
+
+$$L(\beta |y) = \prod\limits_{i = 1}^n {\beta {e^{ - \beta {y_i}}}}  = {\beta ^n}{e^{ - \beta \sum\nolimits_{i = 1}^n {{y_i}} }}$$
+Letting $k={\sum\nolimits_{i = 1}^n {{y_i}} }$ we obtain the log likelihood as:
+
+$$\log L(\beta |Y) = n\log (\beta ) - \beta k$$
+The next step in the derivation of the Jeffreys Prior is to calculate the Fisher information matrix. We are told the data are iid and we can see that the log likelihood function is twice differentiable which allows us to use an alternative form of the Fisher information matrix. Further, calculation is vastly simplified since our likelihood function is low dimensional (single parameter). The Fisher information is given by the following:
+
+\begin{equation}
+\tag{General}
+{\bf{I}_{j,k}}(\boldsymbol{\theta}) =  - \mathbb{E}_{\bf{y}|\theta}\left[ {{{{\partial ^2}\log L(\bf{y}|\boldsymbol{\theta})} \over {\partial {\theta _j}\partial {\theta _k}}}} \right]
+\end{equation}
+
+\begin{equation}
+{\bf{I}}(\beta ) = {n \over {{\beta ^2}}}
+\end{equation}
+
+The Jefferys prior is defined as:
+
+\begin{equation}
+\tag{General}
+\pi(\theta) \propto \sqrt{det|\bf{I{(\theta)}}|}
+\end{equation}
+
+\begin{equation}
+\pi(\beta) \propto \sqrt{det|\bf{I{(\beta)}}|} \propto \beta^{-1}
+\end{equation}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
