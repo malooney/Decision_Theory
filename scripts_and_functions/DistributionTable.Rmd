@@ -20,14 +20,14 @@ header-includes:
 - \usepackage{pdflscape}
 
 fontsize: 10pt
-geometry: margin = 0.5in
+geometry: margin = 0.1in
 ---
 
 
 \tiny
 \begin{landscape}
 \begin{tabular}{ c c c c c c c c c c }
-  Distribution & Parameters & CDF & PMF/PDF & Support & Mean & Median & Mode & Variance & MGF \\ \hline \\
+  Distribution & Parameters & CDF & PMF/PDF & Support & Mean & Median & Mode & Variance & MGF \\ \hline \hline \\
   
   Bernoulli & 
   $0<p<1,p\in \mathbb {R}$ &
@@ -53,7 +53,46 @@ geometry: margin = 0.5in
   $\lambda > 0$ (real) - rate & 
   ${\frac {\Gamma (\lfloor k+1\rfloor ,\lambda )}{\lfloor k\rfloor !}}$, or ${\displaystyle e^{-\lambda }\sum _{i=0}^{\lfloor k\rfloor }{\frac {\lambda ^{i}}{i!}}\ }$ & 
   ${\displaystyle {\frac {\lambda ^{k}e^{-\lambda }}{k!}}}$ & 
-  ${\displaystyle k\in \mathbb {N} \cup \{0\}};$\\ \hline \hline \\
+  ${\displaystyle k\in \mathbb {N} \cup \{0\}};$ & 
+  $\lambda$ & 
+  $\approx \lfloor \lambda +1/3-0.02/\lambda \rfloor $ & 
+  $\lceil \lambda \rceil -1,\lfloor \lambda \rfloor $ & 
+  $\lambda$ & 
+  $\exp(\lambda (e^{t}-1))$ \\ \hline \hline \\
+  Gamma (rate) & 
+  $\alpha > 0$ shape, $\beta > 0$ rate &
+  ${\displaystyle {\frac {1}{\Gamma (\alpha )}}\gamma (\alpha ,\beta x)}$ & 
+  ${\displaystyle {\frac {\beta ^{\alpha }}{\Gamma (\alpha )}}x^{\alpha -1}e^{-\beta x}}$ & 
+  $x \in (0, \infty)$ & 
+  ${\displaystyle \operatorname {E} [X]={\frac {\alpha }{\beta }}}$ & 
+  No simple closed form & 
+  ${\displaystyle {\frac {\alpha -1}{\beta }}{\text{ for }}\alpha \geq 1}$ & 
+  ${{\frac {\alpha }{\beta ^{2}}}}$ & 
+  ${\displaystyle \left(1-{\frac {t}{\beta }}\right)^{-\alpha }{\text{ for }}t<\beta }$  \\ \hline \\
+  Gamma (scale) & 
+  $k > 0$ shape, $\theta > 0$ scale &
+  ${\displaystyle {\frac {1}{\Gamma (k)}}\gamma \left(k,{\frac {x}{\theta }}\right)}$ & 
+  ${\displaystyle {\frac {1}{\Gamma (k)\theta ^{k}}}x^{k-1}e^{-{\frac {x}{\theta }}}}$ & 
+  $x \in (0, \infty)$ & 
+  ${\displaystyle \operatorname {E} [X]=k\theta }$ & 
+  No simple closed form & 
+  ${\displaystyle (k-1)\theta {\text{ for }}k\geq 1}$ & 
+  ${k\theta ^{2}}$ & 
+  ${\displaystyle (1-\theta t)^{-k}{\text{ for }}t<{\frac {1}{\theta }}}$  \\ \hline \\
+  Beta & 
+  $\alpha > 0$ shape, $\beta > 0$ shape & 
+  $I_x(\alpha,\beta)\!$ & 
+  $\frac{x^{\alpha-1}(1-x)^{\beta-1}} {{\rm B}(\alpha,\beta)}\!$ & 
+  ${\displaystyle x\in [0,1]\!}$ &
+  $\operatorname{E}[X] = \frac{\alpha}{\alpha+\beta}\!$ & 
+  $\begin{matrix}I_{\frac{1}{2}}^{[-1]}(\alpha,\beta)\text{ (in general) }\\[0.5em]
+\approx \frac{ \alpha - \tfrac{1}{3} }{ \alpha + \beta - \tfrac{2}{3} }\text{ for }\alpha, \beta >1\end{matrix}$ &
+  $\frac{\alpha-1}{\alpha+\beta-2}\! for \alpha, \beta >1$ & 
+  $\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}\!$ & 
+  $1 + \sum\limits_{k = 1}^\infty  {\left( {\prod\limits_{r = 0}^{k - 1} {{{\alpha  + r} \over {\alpha  + \beta  + r}}} } \right)} {{{t^k}} \over {k!}}$  \\ \hline \\
+  Exponential & 
+  
+
   
   
 \end{tabular}

@@ -46,18 +46,67 @@ In this problem we will explore an alternate class of priors.
 
 ### (b) Derive the Jeffery’s prior for the Bernoulli model (i.e., assuming ${Y_i}\mathop  = \limits^{iid} Bernoulli(p)$), and find the posterior distribution of $p$ under this prior. Is it a known distribution? Discuss how you would proceed to conduct posterior inference.
 
-Assuming ${Y_i}\mathop  = \limits^{iid} Bernoulli(p)$, then we can say that $Y|p \sim Binomial(n,p)$ and we can obtain the liklehood function as:
+Assuming ${Y_i}\mathop  = \limits^{iid} Bernoulli(p)$, then we can say that $Y|p \sim Binomial(n,p)$ and we can obtain the likelihood function as:
 
 $$L(p|Y) = \prod\limits_{i = 1}^n {{p^{{y_i}}}{{(1 - p)}^{1 - {y_i}}} = {p^{\sum\nolimits_{i = 1}^n {{y_i}} }}{{(1 - p)}^{\sum\nolimits_{i = 1}^n {(1 - {y_i})} }}}  = {p^{\sum\nolimits_{i = 1}^n {{y_i}} }}{(1 - p)^{n - \sum\nolimits_{i = 1}^n {{y_i}} }}$$
-Letting $k={\sum\nolimits_{i = 1}^n {{y_i}} }$ we obtain the log liklehood as:
+Letting $k={\sum\nolimits_{i = 1}^n {{y_i}} }$ we obtain the log likelihood as:
 
 $$\log L(p|Y) = k\log (p) + (n - k)\log (1 - p)$$
 
-The next step in the derivation of the jeffreys Prior is to calculate the Fisher information matirx. We are told the data is iid and we can see that the log liklehood function is twice differentiable which allows us to use an alternative form of the Fisher information matrix. Further, calculation is vastly simplified since our liklehood function is low dimensinal (single paramater). The Fisher information is given by the following:
+The next step in the derivation of the jeffreys Prior is to calculate the Fisher information matrix. We are told the data is iid and we can see that the log likelihood function is twice differentiable which allows us to use an alternative form of the Fisher information matrix. Further, calculation is vastly simplified since our likelihood function is low dimensional (single parameter). The Fisher information is given by the following:
 
-$${\bf{I}_{j,k}}(\boldsymbol{\theta}) =  - \mathbb{E}_{\bf{y}|\theta}\left[ {{{{\partial ^2}\log L(\bf{y}|\boldsymbol{\theta})} \over {\partial {\theta _j}\partial {\theta _k}}}} \right]$$
+\begin{equation}
+\tag{General}
+{\bf{I}_{j,k}}(\boldsymbol{\theta}) =  - \mathbb{E}_{\bf{y}|\theta}\left[ {{{{\partial ^2}\log L(\bf{y}|\boldsymbol{\theta})} \over {\partial {\theta _j}\partial {\theta _k}}}} \right]
+\end{equation}
 
+\begin{equation}
+{\bf{I}}(p) =  - \left[ {{{ -\mathbb{E} [k]} \over {{p^2}}} -{{(n -\mathbb{E}[k])} \over {{{(1 - p)}^2}}}} \right]
+\end{equation}
 
+Recalling that $Y|p \sim Binomial(n,p)$ and we defined $k$ as ${\sum\nolimits_{i = 1}^n {{y_i}} }$, then $\mathbb{E}[k]=np$ and we obtain the following results:
+
+$${\bf{I}}(p) = {n \over {p(1 - p)}}$$
+
+The Jefferys prior is defined as:
+
+\begin{equation}
+\tag{General}
+\pi(\theta) \propto \sqrt{det|\bf{I{(\theta)}}|}
+\end{equation}
+
+\begin{equation}
+\pi(p) \propto \sqrt{det|\bf{I{(p)}}|} \propto {p^{ - 0.5}}{(1 - p)^{ - 0.5}}
+\end{equation}
+
+We recognize that equation 2 can be made to look like a Beta distribution by subtracting one from each of the powers to obtain $\pi(p) \propto {p^{0.5-1}}{(1 - p)^{0.5-1}}$ and we now have the Jeffrys prior which is $Beta(\frac{1}{2}, \frac{1}{2})$.
+
+With the non-informative Jefferys prior in hand we can proceed to build the posterior distribution in the usual way which gives:
+
+\begin{equation}
+\tag{General}
+p(\theta |y) = \frac{{p(y|\theta )p(\theta )}}{{\int\limits_A {p(y|\theta )p(\theta )d\theta } }} \propto \underbrace {p(y|\theta )}_{{\text{L(}}\theta {\text{)}}}\underbrace {p(\theta )}_{{\text{Prior}}}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+\pi (p|y) &= {p^{\sum\nolimits_{i = 1}^n {{y_i}} }}{(1 - p)^{n - \sum\nolimits_{i = 1}^n {{y_i}} }} \cdot {p^{0.5 - 1}}{(1 - p)^{0.5 - 1}} \\
+& = {p^{\sum\nolimits_{i = 1}^n {{y_i} + 0.5 - 1} }}{(1 - p)^{n - \sum\nolimits_{i = 1}^n {{y_i} + 0.5 - 1} }}
+\end{split}
+\end{equation}
+
+If we let ${\sum\nolimits_{i = 1}^n {{y_i}} }= n \bar{Y}$ then the posterior distribution is $Beta(\overbrace {n\bar Y + 0.5}^\alpha,\overbrace {n - n\bar Y + 0.5}^\beta)$, where $\alpha$ and $\beta$ are the hyperparameters of the Beta distribution and $\alpha>0$ (first shape parameter), $\beta>0$ (second shape parameter).
+
+The Beta distribution is well known with all of the most relevant moments documented. We can obtain the posterior mean and variance by applying the following formulas and making the appropriate substitutions of the posterior distributions hyperparameters:
+
+\begin{equation}
+\begin{split}
+\mathbb{E}[p|y] &= \frac{\alpha}{\alpha+\beta}= \hat\mu \\
+Var(p|y) &= \frac{\hat\mu(1-\hat\mu)}{\alpha+\beta+1}
+\end{split}
+\end{equation}
+
+We can also calculate the Equal Tail Credible Intervals and the HPD Credible Intervals to determine the 95% probability that $p$ falls within some upper and lower bound.
 
 
 
