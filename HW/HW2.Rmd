@@ -17,6 +17,10 @@ header-includes:
 - \usepackage{setspace}
 - \usepackage{mathrsfs}
 - \usepackage{eso-pic,graphicx,transparent}
+
+bibliography: DTheory_HW2Bib.bib
+csl: computational-economics.csl
+link-citations: true
 fontsize: 10pt
 geometry: margin = 1.25in
 ---
@@ -205,12 +209,34 @@ The Jefferys prior is defined as:
 \pi(\beta) \propto \sqrt{det|\bf{I{(\beta)}}|} \propto \beta^{-1}
 \end{equation}
 
+We recognize that equation 10 can be made to look like a Gamma distribution by the following $\beta^{0-1}e^0$ and we now have the Jeffrys prior which is $Gamma(0, 0)$. @Kerman:2011un has argued that a more proper way to represent improper priors is by representing this form of Jeffreys prior as $Gamma(\varepsilon, \varepsilon)$ where $\varepsilon \approx 0$. The rationale being that as $\varepsilon \to 0$, the distribution appears flatter and flatter over the positive real axis. Either way the prior is still improper but is now defined. The posterior distribution is, however, proper and we can proceed.
 
+With the non-informative Jefferys prior in hand we can move to build the posterior distribution in the usual way which gives:
 
+\begin{equation}
+\tag{General}
+p(\theta |y) = \frac{{p(y|\theta )p(\theta )}}{{\int\limits_A {p(y|\theta )p(\theta )d\theta } }} \propto \underbrace {p(y|\theta )}_{{\text{L(}}\theta {\text{)}}}\underbrace {p(\theta )}_{{\text{Prior}}}
+\end{equation}
 
+\begin{equation}
+\begin{split}
+p(\beta |y) &= {\beta ^n}{e^{ - \beta \sum\nolimits_{i = 1}^n {{y_i}} }} \cdot \beta^{0-1}e^0 \\
+&= {\beta ^{n - 1}}{e^{ - \beta \sum\nolimits_{i = 1}^n {{y_i}} }}
+\end{split}
+\end{equation}
 
+If we let ${\sum\nolimits_{i = 1}^n {{y_i}} }= n \bar{Y}$ then the posterior distribution is $Gamma(\overbrace {n}^\alpha,\overbrace {n \bar{Y}}^\beta)$, where $\alpha$ and $\beta$ are the parameters of the Gamma distribution and $\alpha>0$ (shape parameter), $\beta>0$ (rate parameter).
 
+The Gamma distribution is well known with all of the most relevant moments documented. We can obtain the posterior mean and variance by applying the following formulas and making the appropriate substitutions of the posterior distributions parameters:
 
+\begin{equation}
+\begin{split}
+\mathbb{E}[\beta|y] &= {\alpha  \over \beta } \\
+Var(\beta |y) &= {\alpha  \over \beta ^2}
+\end{split}
+\end{equation}
+
+We can also calculate the Equal Tail Credible Intervals and the HPD Credible Intervals to determine the 95% probability that $\lambda$ falls within some upper and lower bound.
 
 
 
@@ -265,11 +291,16 @@ Game of chance, the game of craps and a betting strategy are going to be explore
 ### (c) Write a Monte Carol simulation to find your expected winnings after the 10 games. Also examine the distribution of your expected winnings. Does it appear that this is a good betting strategy?
 
 
+\newpage
+\singlespace
 
+---
+nocite: | 
+  @2017arXiv170501064L, @Kerman:2011un, @Gelman:2014dr
+...
 
+# References and Appendix
 
-
-
-
+## References:
 
 
