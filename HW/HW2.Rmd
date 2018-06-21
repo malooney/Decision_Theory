@@ -45,6 +45,26 @@ In this problem we will explore an alternate class of priors.
 
 ### (a) Find a resource and write a basic description of what a Jeffrey’s prior is. Be thorough, your exposition here needs to be such that someone who knows nothing of what a Jeffrey’s prior is could learn the salient features. Identify why people like Jeffery’s priors and discuss drawbacks.
 
+The general idea behind the Jeffrys prior is to find a prior that is non-informative. In other words, we as the researcher should not impose too much prior belief onto the model. We want the data to be allowed to speak for itself. Further, we may be in a situation where there is not much information available about the population under study and we need a way to develop a prior despite this lack of initial knowledge.
+
+Sir Harold Jeffreys developed a method to obtain a non-informative prior based on a one-to-one transformation of the distributions parameters. This is sometimes refereed to as the Jeffreys’ invariance principle because the parameters are invariant to affine transformations.
+
+The Jeffreys prior is derived by the following steps:
+
+  * Based on the proposed DGP, identify a distribution for the data.
+  
+  * Derive a likelihood function based on the data distribution
+  
+  * Ensure the likelihood function is twice differentiable
+  
+  * Calculate the Fisher Information Matrix
+    * alternative forms of the Fisher information matrix may be employed depending on the nature of the independence of the data, ie. independent or iid. If the distribution is single parameter the calculation is vastly simplified.
+  
+  * The Jeffreys prior is given by the following formula: $\pi(\theta) \propto \sqrt{det|\bf{I{(\theta)}}|}$ 
+    * where $\bf{I}(\theta)$ is the Fisher information matrix, and $det|\cdot|$ is the determinant if the information matrix.
+    
+One of the benefits of using the Jeffreys prior is that it brings very little bias into the model. Using the Jeffreys prior reduces some of the criticism that the researcher is driving the results based on the prior distribution. As mentioned earlier, there may be little information available about the population model under study and having access to a non-informative prior can help. The Jeffreys prior can sometimes be very difficult or impossible to calculate depending on the number of parameters in the model and the nature of the independence of the data. In high dimensional space the Jeffreys prior can be challenging to obtain, and if obtainable can sometimes yield poor results.
+  
 
 
 ### (b) Derive the Jeffery’s prior for the Bernoulli model (i.e., assuming ${Y_i}\mathop  = \limits^{iid} Bernoulli(p)$), and find the posterior distribution of $p$ under this prior. Is it a known distribution? Discuss how you would proceed to conduct posterior inference.
