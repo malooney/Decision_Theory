@@ -347,21 +347,57 @@ $\Delta_{\sigma^2}=\sigma^2-mc.\sigma^2$ & . & . & . & `r sig.sq- Y.var ` \\
 
 ### (c) Approach 2: Note, the distribution of $Y$ can also be obtained through the convolution of the probability distributions of $X_1$ and $X_2$. Sketch out theoretically how this would be done. Based on this idea, create a Monte Carlo sampling technique which can be used to approximate the pdf of $Y$ evaluated at any point in the support. Use this function and add the approximation based on this technique to the Figure described in the part (b) above.
 
-```{r}
+```{r, echo=F}
 
 # Problem 2.c ------------------------------------------------------------------
+# Initial paramater values taken from Problem 1.b
 
-N = length(Y.grid)
-dY = numeric(N)
-
-for(i in 1:N){
-  X2.samp = rnorm(N, mu2, sqrt(sig2.2))
-  dY[i] = mean(dnorm(Y.grid[i]- X2.samp, mu1, sqrt(sig2.1)))
+f.X1 <- function(x1){ 
+  dnorm(x1, mu1, sqrt(sig2.1))
 }
-lines(Y.grid, dY, col = "blue", lty = 5)
+
+f.X2 <- function(x2){
+  dnorm(x2, mu2, sqrt(sig2.2))
+}
+
+f.Y <- function(Y.grid){ 
+  integrate(function(x1, Y.grid) f.X2(Y.grid- x1)* f.X1(x1), -Inf, Inf,
+            Y.grid)$value
+}
+
+f.Y <- Vectorize(f.Y)
+
+# Y.grid is assumed to be the MC integration support region  
+convolution.Y <- f.Y(Y.grid)
 
 ```
 
+
+```{r, echo=F, fig.height=3}
+
+par(mfrow=c(1,2), ps = 10, cex = 0.55, cex.main = 1.5)
+
+hist(Y, prob = TRUE, xlab = "Y", ylab = "p(Y)", xlim=c(-30,30))
+
+#lines(density(Y), lwd = 2)
+
+lines(Y.grid, true.density, col = 2, lty = 2, lwd = 2)
+
+legend(4, 0.1,  c("True Density of Y"), 
+       lty=c(2), col=c("red"))
+
+
+hist(Y, prob = TRUE, xlab = "Y", ylab = "p(Y)", xlim=c(-30,30),
+     main="Convolution Method - Histogram of Y")
+
+lines(Y.grid, true.density, col = "red", lty = 2, lwd = 4)
+
+lines(Y.grid, convolution.Y, col = "lightgreen", lty = 1)
+
+legend(4, 0.1,  c("True Density of Y", "Convolution of Y"), 
+       lty=c(2,1), col=c("red", "lightgreen"))
+
+```
 ### (d) Repeat the two approaches described in (b) and (c) above for ${X_1} \sim Gamma({\alpha _1},{\beta _1})$ and ${X_2} \sim Gamma({\alpha _2},{\beta _2})$. Note, unless $\beta_1$ = $\beta_2$, the resulting distribution of $Y$ is not friendly. Also be cautious of the support.
 
 
@@ -390,7 +426,8 @@ Game of chance, the game of craps and a betting strategy are going to be explore
 
 ---
 nocite: | 
-  @2017arXiv170501064L, @Kerman:2011un, @Gelman:2014dr, @Grinstead:1997ww
+  @2017arXiv170501064L, @Kerman:2011un, @Gelman:2014dr, @Grinstead:1997ww, 
+  @casella2002statistical, @Robert:2010vu
 ...
 
 # References and Appendix
