@@ -259,30 +259,91 @@ Var(\beta |y) &= {\alpha  \over \beta ^2}
 We can also calculate the Equal Tail Credible Intervals and the HPD Credible Intervals to determine the 95% probability that $\lambda$ falls within some upper and lower bound.
 
 
-
-
-
-
-
-
-
-
-
-
-
-\newpage
-
 # Problem 2
 
 Let ${X_1} \sim N({\mu _1},\sigma _1^2)$ and ${X_2} \sim N({\mu _2},\sigma _2^2)$ such that $X_1$ and $X_2$ are independent. Define $Y = {X_1} + {X_2}$. The goal of this problem is to determine the distribution of $Y$; i.e., the sum of two independent normal random variables.
 
 ### (a) Obviously, this is trivial, so simply state the distribution of $Y$.
 
+The sum of two independent normally distributed random variables is normal.
 
+$$Y=X_1+X_2=Y \sim \mathcal{N}(\mu_1+\mu_2,\,\sigma_1^{2}+\sigma_2^{2})\,.$$
 
 ### (b) Approach 1: Consider using Monte Carlo sampling to obtain a histogram and kernel density estimate (see the code that I have provided) of the pdf of $Y$ by directly sampling both $X_1$ and $X_2$. Over plot the true density of $Y$ and comment. Note, you should make use of large enough Monte Carlo sample that your results are reasonable.
 
+```{r, echo=F}
 
+# Problem 2.b ------------------------------------------------------------------
+set.seed(1)
+
+mu1 = runif(1, -5, 5)
+mu2 = runif(1, -5, 5)
+sig2.1 =runif(1, 0, 10)
+sig2.2 = runif(1, 0, 10)
+
+n1 = n2 = 10000
+X1 = rnorm(n1, mu1, sqrt(sig2.1))
+X2 = rnorm(n2, mu2, sqrt(sig2.2))
+Y = X1 + X2
+
+# hist(Y, prob = TRUE, xlab = "Y", ylab = "p(Y)", xlim=c(-30,30))
+# lines(density(Y), lwd = 2)
+
+mu = mu1 + mu2
+sig.sq = sig2.1 + sig2.2
+
+Y.grid = seq(-20, 20, by = 0.01)
+true.density = 1 / sqrt(2*pi*sig.sq) * exp(-1/(2*sig.sq)*(Y.grid - mu)^2)
+# lines(Y.grid, true.density, col = 2, lty = 2, lwd = 2)
+# legend(0, .1,  c("True Density of Y", "MC Simulation of Y"), lty=c(2,1), col=c("red", "black"))
+
+Y.mean <- mean(Y)
+Y.var <- var(Y)
+
+```
+
+```{r, echo=F, fig.height=3}
+
+par(mfrow=c(1,2), ps = 10, cex = 0.55, cex.main = 1.5)
+
+hist(Y, prob = TRUE, xlab = "Y", ylab = "p(Y)", xlim=c(-30,30))
+
+lines(density(Y), lwd = 2)
+
+lines(Y.grid, true.density, col = 2, lty = 2, lwd = 2)
+
+legend(4, .1,  c("True Density of Y", "MC Simulation of Y"), 
+       lty=c(2,1), col=c("red", "black"))
+
+
+hist(Y, prob = TRUE, xlab = "Y", ylab = "p(Y)", xlim=c(-10,5), ylim=c(0.06, 0.15), main="Zoomed Histogram of Y")
+
+lines(density(Y), lwd = 2)
+
+lines(Y.grid, true.density, col = 2, lty = 1, lwd = 1)
+
+legend(-3, .15,  c("True Density of Y", "MC Simulation of Y"), 
+       lty=c(2,1), col=c("red", "black"))
+
+```
+
+The above plots show the true density of $Y$ (red) and the Monte Carlo simulation resluts (black). The histogram plot shows the probability distribution of $Y$. It is plain to see that the true density of $Y$ and the Monte Carlo simulation reults produce nearly identical results. The table below summerizes the results from this experiment. The final column of the table shows the difference between the true values of $Y$ and the Monte Carlo simulation. This indicates that the Monte Carlo simulation technique works very well in this case.  
+
+\bigskip
+
+\begin{tabular}{ c c c c c }
+& Initial Values & True Values & MC Simulation (10,000 iter) & $\Delta_{\cdot\cdot\cdot}$ \\ \hline \hline \\
+$\mu_1$ & `r mu1 ` & . & . & . \\
+$\mu_2$ & `r mu2 ` & . & . & . \\
+$\sigma_1^2$ & `r sig2.1 ` & . & . & . \\
+$\sigma_1^2$ & `r sig2.2 ` & . & . & . \\
+${\mu}=\mu_1+\mu_2$ & . & `r mu ` & . & . \\
+${\sigma^2}=\sigma^2_1+\sigma^2_2$ & . & `r sig.sq ` & . & . \\
+$mc.\mu$ & . & . & `r Y.mean ` & . \\
+$mc.\sigma^2$ & . & . & `r Y.var ` & . \\
+$\Delta_{\mu}=\mu-mc.\mu$ & . & . & . & `r mu- Y.mean ` \\
+$\Delta_{\sigma^2}=\sigma^2-mc.\sigma^2$ & . & . & . & `r sig.sq- Y.var ` \\
+\end{tabular}
 
 ### (c) Approach 2: Note, the distribution of $Y$ can also be obtained through the convolution of the probability distributions of $X_1$ and $X_2$. Sketch out theoretically how this would be done. Based on this idea, create a Monte Carlo sampling technique which can be used to approximate the pdf of $Y$ evaluated at any point in the support. Use this function and add the approximation based on this technique to the Figure described in the part (b) above.
 
