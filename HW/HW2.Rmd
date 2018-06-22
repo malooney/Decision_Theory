@@ -28,7 +28,7 @@ geometry: margin = 1.25in
 ```{r, echo=F, warning=F, message=F, cache=F}
 
 # Housekeeping ----------------------------------------------------------------
-rm(list=ls())
+rm(list= ls())
 cat("\014")
 
 
@@ -276,26 +276,21 @@ $$Y=X_1+X_2=Y \sim \mathcal{N}(\mu_1+\mu_2,\,\sigma_1^{2}+\sigma_2^{2})\,.$$
 # Problem 2.b ------------------------------------------------------------------
 set.seed(1)
 
-mu1 = runif(1, -5, 5)
-mu2 = runif(1, -5, 5)
-sig2.1 =runif(1, 0, 10)
-sig2.2 = runif(1, 0, 10)
+mu1= runif(1, -5, 5)
+mu2= runif(1, -5, 5)
+sig2.1=runif(1, 0, 10)
+sig2.2= runif(1, 0, 10)
 
-n1 = n2 = 10000
-X1 = rnorm(n1, mu1, sqrt(sig2.1))
-X2 = rnorm(n2, mu2, sqrt(sig2.2))
-Y = X1 + X2
+n1= n2= 10000
+X1= rnorm(n1, mu1, sqrt(sig2.1))
+X2= rnorm(n2, mu2, sqrt(sig2.2))
+Y= X1+ X2
 
-# hist(Y, prob = TRUE, xlab = "Y", ylab = "p(Y)", xlim=c(-30,30))
-# lines(density(Y), lwd = 2)
+mu= mu1+ mu2
+sig.sq= sig2.1+ sig2.2
 
-mu = mu1 + mu2
-sig.sq = sig2.1 + sig2.2
-
-Y.grid = seq(-20, 20, by = 0.01)
-true.density = 1 / sqrt(2*pi*sig.sq) * exp(-1/(2*sig.sq)*(Y.grid - mu)^2)
-# lines(Y.grid, true.density, col = 2, lty = 2, lwd = 2)
-# legend(0, .1,  c("True Density of Y", "MC Simulation of Y"), lty=c(2,1), col=c("red", "black"))
+Y.grid= seq(-20, 20, by= 0.01)
+true.density= 1/ sqrt(2* pi* sig.sq)* exp(-1/ (2* sig.sq)* (Y.grid- mu)^2)
 
 Y.mean <- mean(Y)
 Y.var <- var(Y)
@@ -304,26 +299,27 @@ Y.var <- var(Y)
 
 ```{r, echo=F, fig.height=3}
 
-par(mfrow=c(1,2), ps = 10, cex = 0.55, cex.main = 1.5)
+par(mfrow= c(1, 2), ps= 10, cex= 0.55, cex.main= 1.5)
 
-hist(Y, prob = TRUE, xlab = "Y", ylab = "p(Y)", xlim=c(-30,30))
+hist(Y, prob= TRUE, xlab= "Y", ylab= "p(Y)", xlim= c(-30, 30))
 
-lines(density(Y), lwd = 2)
+lines(density(Y), lwd= 2, col= "green")
 
-lines(Y.grid, true.density, col = 2, lty = 2, lwd = 2)
+lines(Y.grid, true.density, col= "red", lty= 2, lwd= 2)
 
 legend(4, .1,  c("True Density of Y", "MC Simulation of Y"), 
-       lty=c(2,1), col=c("red", "black"))
+       lty= c(2, 1), col= c("red", "black"))
 
 
-hist(Y, prob = TRUE, xlab = "Y", ylab = "p(Y)", xlim=c(-10,5), ylim=c(0.06, 0.15), main="Zoomed Histogram of Y")
+hist(Y, prob= TRUE, xlab= "Y", ylab= "p(Y)", xlim= c(-10, 5), 
+     ylim= c(0.06, 0.15), main= "Zoomed Histogram of Y")
 
-lines(density(Y), lwd = 2)
+lines(density(Y), lwd= 2, col= "green")
 
-lines(Y.grid, true.density, col = 2, lty = 1, lwd = 1)
+lines(Y.grid, true.density, col= "red", lty= 1, lwd= 1)
 
 legend(-3, .15,  c("True Density of Y", "MC Simulation of Y"), 
-       lty=c(2,1), col=c("red", "black"))
+       lty= c(2, 1), col= c("red", "green"))
 
 ```
 
@@ -352,6 +348,15 @@ $\Delta_{\sigma^2}=\sigma^2-mc.\sigma^2$ & . & . & . & `r sig.sq- Y.var ` \\
 # Problem 2.c ------------------------------------------------------------------
 # Initial paramater values taken from Problem 1.b
 
+# MC convolution ---------------------------------------------------------------
+N= length(Y.grid)
+dY= numeric(N)
+for(i in seq_len(N)){ 
+  X2.x2 = rnorm(N, mu2, sqrt(sig2.2))
+  dY[i] = (1/ N) *sum((dnorm(Y.grid[i]- X2.x2, mu1, sqrt(sig2.1))))
+}
+
+# Numerical Convolution using R "integrate" funtion (quadrature) ---------------
 f.X1 <- function(x1){ 
   dnorm(x1, mu1, sqrt(sig2.1))
 }
@@ -361,8 +366,8 @@ f.X2 <- function(x2){
 }
 
 f.Y <- function(Y.grid){ 
-  integrate(function(x1, Y.grid) f.X2(Y.grid- x1)* f.X1(x1), -Inf, Inf,
-            Y.grid)$value
+  integrate(function(x1, Y.grid) 
+    f.X2(Y.grid- x1)* f.X1(x1), -Inf, Inf, Y.grid)$value 
 }
 
 f.Y <- Vectorize(f.Y)
@@ -375,27 +380,25 @@ convolution.Y <- f.Y(Y.grid)
 
 ```{r, echo=F, fig.height=3}
 
-par(mfrow=c(1,2), ps = 10, cex = 0.55, cex.main = 1.5)
+par(mfrow= c(1, 2), ps= 10, cex= 0.55, cex.main= 1.5)
 
-hist(Y, prob = TRUE, xlab = "Y", ylab = "p(Y)", xlim=c(-30,30))
+hist(Y, prob= TRUE, xlab= "Y", ylab= "p(Y)", xlim=c(-30, 30))
 
-#lines(density(Y), lwd = 2)
+lines(Y.grid, true.density, col= "red", lty= 2, lwd= 2)
 
-lines(Y.grid, true.density, col = 2, lty = 2, lwd = 2)
+#lines(Y.grid, dY, col = "lightblue", lty= 1)
 
-legend(4, 0.1,  c("True Density of Y"), 
-       lty=c(2), col=c("red"))
+legend(4, 0.1,  c("True Density of Y"), lty= c(2), col= c("red"))
 
+hist(Y, prob= TRUE, xlab= "Y", ylab= "p(Y)", xlim= c(-30, 30),
+     main= "Convolution Method - Histogram of Y")
 
-hist(Y, prob = TRUE, xlab = "Y", ylab = "p(Y)", xlim=c(-30,30),
-     main="Convolution Method - Histogram of Y")
+lines(Y.grid, true.density, col = "red", lty= 2, lwd= 4)
 
-lines(Y.grid, true.density, col = "red", lty = 2, lwd = 4)
-
-lines(Y.grid, convolution.Y, col = "lightgreen", lty = 1)
+lines(Y.grid, convolution.Y, col = "lightgreen", lty= 1)
 
 legend(4, 0.1,  c("True Density of Y", "Convolution of Y"), 
-       lty=c(2,1), col=c("red", "lightgreen"))
+       lty=c(2, 1), col=c("red", "lightgreen"))
 
 ```
 ### (d) Repeat the two approaches described in (b) and (c) above for ${X_1} \sim Gamma({\alpha _1},{\beta _1})$ and ${X_2} \sim Gamma({\alpha _2},{\beta _2})$. Note, unless $\beta_1$ = $\beta_2$, the resulting distribution of $Y$ is not friendly. Also be cautious of the support.
