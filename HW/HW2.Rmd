@@ -384,7 +384,7 @@ convolution.Y <- f.Y(Y.grid)
 
 ```
 
-I have leaned very heavily on the several resources to learn the concept of convolutions as it relates to the sums of two continuous random variables. (@Grinstead:1997ww, @Robert:2010vu, @casella2002statistical) 
+I have leaned very heavily on several resources to learn the concept of convolutions as it relates to the sums of two continuous random variables. (@Grinstead:1997ww, @Robert:2010vu, @casella2002statistical) 
 
 Let $X_1$ and $X_2$ be two continuous random variables with density functions $f(x)$ and $g(x)$, respectively. Assume that both $f(x_1)$ and $g(x_2)$ are defined for all real numbers, $x_1$ and $x_2$ $\in \mathbb{R}$. Then the convolution $f*g$ of $f$ and $g$ is the function given by
 
@@ -445,7 +445,77 @@ legend(4, 0.1,  c("True Density of Y", "Convolution of Y"),
 
 ### (d) Repeat the two approaches described in (b) and (c) above for ${X_1} \sim Gamma({\alpha _1},{\beta _1})$ and ${X_2} \sim Gamma({\alpha _2},{\beta _2})$. Note, unless $\beta_1$ = $\beta_2$, the resulting distribution of $Y$ is not friendly. Also be cautious of the support.
 
+```{r, echo=F, cache=T}
 
+# Problem 2.d -----------------------------------------------------------------
+
+a1 = runif(1, 0, 5)
+b1 = runif(1, 0, 5)
+a2 = runif(1, 0, 5)
+b2 = runif(1, 0, 5)
+
+n1 = n2 = 10000
+X1 = rgamma(n1, a1, b1)
+X2 = rgamma(n2, a2, b2)
+Y = X1 + X2
+
+Y.grid= seq(0, max(Y), by= 0.01)
+
+# MC convolution --------------------------------------------------------------
+N= length(Y.grid)
+dY= numeric(N)
+
+for(i in seq_len(N)){
+	X2.x2= rgamma(N, a2, b2)
+	dY[i]= (1/N)* sum(dgamma(Y.grid[i]- X2.x2, a1, b1))
+}
+
+# Numerical Convolution using R "integrate" funtion (quadrature) --------------
+f.X1 <- function(x1){ 
+  dgamma(x1, a1, b1)
+}
+
+f.X2 <- function(x2){
+  dgamma(x2, a2, b2)
+}
+
+f.Y <- function(Y.grid){ integrate(function(x1, Y.grid) 
+  f.X2(Y.grid- log(x1))* f.X1(x1), 0, Inf, Y.grid)$value
+}
+
+f.Y <- Vectorize(f.Y)
+
+# Y.grid is assumed to be the MC integration support region  
+convolution.Y <- f.Y(exp(Y.grid))
+
+
+# x1 = rgamma(10000, a1, b1)
+# x2 = rgamma(10000, a2, b2)
+# 
+# hist(x1, prob = TRUE)
+# windows()
+# hist(x2, probe = TRUE)
+
+```
+
+```{r, echo=F, fig.height=3}
+
+# Problem 2.d Plots -----------------------------------------------------------
+
+par(mfrow= c(1, 2), ps= 10, cex= 0.55, cex.main= 1.5)
+
+hist(Y, prob = TRUE, xlab = "Y", ylab = "p(Y)", ylim= c(0, 0.03))
+
+lines(density(Y), lwd = 1, col="red")
+
+hist(Y, prob = TRUE, xlab = "Y", ylab = "p(Y)", ylim= c(0, 0.03))
+
+lines(density(Y), lwd = 1, col="red")
+
+lines(Y.grid, dY, col = rgb(0, 1, 0.8, alpha=0.4), lty = 2)
+
+
+```
 
 \newpage
 
