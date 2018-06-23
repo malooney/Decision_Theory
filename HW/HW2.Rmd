@@ -33,6 +33,8 @@ cat("\014")
 
 set.seed(1)
 
+library(summarytools)
+
 
 ```
 
@@ -308,7 +310,7 @@ hist(Y, prob= TRUE, xlab= "Y", ylab= "p(Y)", xlim= c(-30, 30))
 
 lines(density(Y), lwd= 2, col= "green")
 
-lines(Y.grid, true.density, col= "red", lty= 2, lwd= 2)
+lines(Y.grid, true.density, col= "red", lty= 1, lwd= 1)
 
 legend(4, 0.1,  c("True Density of Y", "MC Simulation of Y"), 
        lty= c(2, 1), col= c("red", "black"))
@@ -426,24 +428,26 @@ par(mfrow= c(1, 2), ps= 10, cex= 0.55, cex.main= 1.5)
 
 hist(Y, prob= TRUE, xlab= "Y", ylab= "p(Y)", xlim=c(-30, 30))
 
-lines(Y.grid, true.density, col= "red", lty= 2, lwd= 2)
+lines(Y.grid, true.density, col= "red", lty= 2, lwd= 1)
 
 legend(4, 0.1,  c("True Density of Y"), lty= c(2), col= c("red"))
 
 hist(Y, prob= TRUE, xlab= "Y", ylab= "p(Y)", xlim= c(-30, 30),
      main= "Convolution Method - Histogram of Y")
 
-lines(Y.grid, true.density, col = "red", lty= 2, lwd= 4)
+lines(Y.grid, true.density, col = "red", lty= 2, lwd= 2)
 
-lines(Y.grid, convolution.Y, col = "lightgreen", lty= 1)
+lines(Y.grid, convolution.Y, col = "green", lty= 1)
 
 legend(4, 0.1,  c("True Density of Y", "Convolution of Y"), 
-       lty=c(2, 1), col=c("red", "lightgreen"))
+       lty=c(2, 1), col=c("red","green"))
 
 ```
 
 
 ### (d) Repeat the two approaches described in (b) and (c) above for ${X_1} \sim Gamma({\alpha _1},{\beta _1})$ and ${X_2} \sim Gamma({\alpha _2},{\beta _2})$. Note, unless $\beta_1$ = $\beta_2$, the resulting distribution of $Y$ is not friendly. Also be cautious of the support.
+
+The results from this experiment are similar to what we have seen in parts b and c of Problem 1. The method used in part b can be viewed in the first plot below. The convolution method of part c is the second plot. The initial values for the Gamma distribution can be seen in Table 2 below. I assigned the paramaters for the Gamma distributions randomly using a uniform distribution which gave unusual values for the Gamma parameters. Even with these unusual paramater values the Monte Carlo simulation did a good job at uncovering the true distribution. The last column of Table 2 shows the difference in the mean values obtained by method b and method c. With more standard inital values of the Gamma distribution the difference would be smaller. This problem demonstrates how we can uncover a distribution that may not have a simple analytical solution (the sum of two Gamma distributions where $\beta_1\neq\beta_2$). 
 
 ```{r, echo=F, cache=T}
 
@@ -488,17 +492,32 @@ f.Y <- Vectorize(f.Y)
 # Y.grid is assumed to be the MC integration support region  
 convolution.Y <- f.Y(exp(Y.grid))
 
+Y.mean <- mean(Y)
+#Y.sig2 <- var(Y)
 
-# x1 = rgamma(10000, a1, b1)
-# x2 = rgamma(10000, a2, b2)
-# 
-# hist(x1, prob = TRUE)
-# windows()
-# hist(x2, probe = TRUE)
+dY.mean <- Y.grid[which.max(dY)]
+#dY.var <- var(dY)
 
 ```
 
-```{r, echo=F, fig.height=3}
+\begin{table}
+\begin{tabular}{ c c c c c }
+& Initial Values & True Values & MC Simulation (10,000 iter) & $\Delta_{(\mu)}$ \\ \hline \hline \\
+$\alpha_1$ & `r a1 ` & . & . & . \\
+$\alpha_2$ & `r a2 ` & . & . & . \\
+$\beta_1$ & `r b1 ` & . & . & . \\
+$\beta_2$ & `r b2 ` & . & . & . \\
+${\mu}=\mu_1+\mu_2$ & . & `r Y.mean ` & . & . \\
+$mc.\mu$ & . & . & `r dY.mean ` & . \\
+$\Delta_{\mu}=\mu-mc.\mu$ & . & . & . & `r Y.mean- dY.mean ` \\
+ \hline
+\end{tabular}
+\caption{Summary of Results}
+\label{table:kysymys}
+\end{table}
+
+
+```{r, echo=F, fig.height=5}
 
 # Problem 2.d Plots -----------------------------------------------------------
 
@@ -506,16 +525,17 @@ par(mfrow= c(1, 2), ps= 10, cex= 0.55, cex.main= 1.5)
 
 hist(Y, prob = TRUE, xlab = "Y", ylab = "p(Y)", ylim= c(0, 0.03))
 
-lines(density(Y), lwd = 1, col="red")
+lines(density(Y), lwd = 1, col="red", lty= 2)
 
 hist(Y, prob = TRUE, xlab = "Y", ylab = "p(Y)", ylim= c(0, 0.03))
 
-lines(density(Y), lwd = 1, col="red")
+lines(density(Y), lwd = 1, col="red", lty= 2)
 
-lines(Y.grid, dY, col = rgb(0, 1, 0.8, alpha=0.4), lty = 2)
+lines(Y.grid, dY, col = rgb(0, 1, 0.8, alpha=0.4), lty = 1)
 
 
 ```
+
 
 \newpage
 
@@ -525,15 +545,101 @@ Game of chance, the game of craps and a betting strategy are going to be explore
 
 ### (a) Do a search and outline the rules of craps.
 
+The basic idea of the game of craps is summarized as follows:
 
+  * Roll two - six sided dice.
+  
+  * If the sum of two rolls is in the set {7, 11}, then win.
+  
+  * If the sum of two rolls is in the set {2, 3, 12}, then lose.
+  
+  * Otherwise, the sum of the roll is the players "point". The player rolls the two dice repeatedly until either, the player rolls her "point" number or a 7. If the player rolls her "point" then she wins. If the player rolls her a 7 then she loses. 
 
 
 ### (b) Your initial bet will be 10 dollars. The return on any bet will be the amount that you bet; e.g., if you bet 10 dollars and win, then you win 10 dollars. You are going to play exactly 10 games of craps. If you lose on the previous game, your next bet requires you to “double down,” that is, if on one game you bet X dollars and lose, on the next game you have to bet 2X dollars. If you win on the previous game, your next bet will be 10 dollars.
 
 
+### (c) Write a Monte Carol simulation to find your expected winnings after the 10 games. Also examine the distribution of your expected winnings. Does it appear that this is a good betting strategy
 
+```{r, echo=F, cache=T}
 
-### (c) Write a Monte Carol simulation to find your expected winnings after the 10 games. Also examine the distribution of your expected winnings. Does it appear that this is a good betting strategy?
+# Problem 3.c -----------------------------------------------------------------
+# game of Craps
+
+Craps <- function(){
+  prob <- c(1:6, 5:1)/ 36
+  first.roll <- sample(2:12, 1, prob= prob)
+  if(first.roll %in% c(7, 11) || first.roll %in% c(2, 3, 12)){
+    return(1* (first.roll %in% c(7, 11)))
+  } else{
+    point= first.roll
+    new.roll <- sample(2:12, 1, prob= prob)
+    while(point != new.roll && new.roll != 7){
+      new.roll <- sample(2:12, 1, prob= prob)
+    }
+    return(1* (point == new.roll))
+  }
+}
+
+N = 10000
+n = 10
+initialBet.Matrix <- matrix(10, ncol= 1, nrow= N)
+
+  play <- function(bet= initialBet.Matrix){
+    iBet= bet
+  revenue= 0
+  for(i in seq_len(n)){
+    if(Craps() == 0){
+      revenue= revenue- bet
+      bet= 2* bet
+    } else{
+      revenue= revenue+ bet
+      bet= iBet
+    }
+  }
+  return( matrix(revenue, nrow= 1, ncol= 1))
+  }
+  
+#start_time <- Sys.time()
+earnings <-   matrix(apply(initialBet.Matrix, 1, play), nrow=N, ncol=1)
+#end_time <- Sys.time()
+#end_time - start_time
+
+earn.mean <- mean(earnings)
+earn.max <-  max(earnings)
+earn.min <-  min(earnings)
+
+```
+
+The dollar earnings from any single block of 10 games has a range from a total winnings of $`r as.character(earn.max) ` to a total loss of $`r as.character(earn.min) `. When we average over `r as.character(N) ` blocks the over all expected winnings is `r earn.mean `.
+
+We can get a sense of how the distribution looks over the `r as.character(N) ` experiments by viewing the plots below. The histogram shows how the outcomes are distributed. The second plot shows the outcomes over the experiment. It is interesting to note that while the earnings from most blocks of 10 games hover around zero we obtain a fair amount of heavy losses which out weigh the wins. This can be seem more clearly in the frequancy table below.
+
+This is not a good betting stratagy.
+
+\bigskip
+
+```{r, echo=F, fig.height=2}
+
+# Problem 3.c Plots -----------------------------------------------------------
+
+par(mfrow= c(1, 2), ps= 10, cex= 0.55, cex.main= 1.5)
+
+hist(earnings, main= "Histogram of Earnings", xlab= "Earnings", xlim= c(earn.min+100, earn.max+10000))
+
+plot(earnings[1:10000], type="l", main= "plot of 10,000 Experiments", 
+     ylab= "Earnings", ylim= c(earn.min+100, earn.max+10000))
+
+```
+
+```{r, echo=F, results='asis'}
+
+# Problem 3.c freq table ------------------------------------------------------
+
+freq(as.vector(earnings), display.nas= FALSE, style= "rmarkdown", method = "pander", 
+     omit.headings =T)
+```
+
 
 
 \newpage
