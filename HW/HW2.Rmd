@@ -2,7 +2,7 @@
 title: "STAT 5370 – Decision Theory"
 subtitle: "Homework 2"
 author: "Matthew Aaron Looney"
-date: "6/22/2018"
+date: "6/25/2018"
 output: 
   pdf_document: 
     fig_caption: yes
@@ -34,7 +34,6 @@ cat("\014")
 set.seed(1)
 
 library(summarytools)
-
 
 ```
 
@@ -447,7 +446,7 @@ legend(4, 0.1,  c("True Density of Y", "Convolution of Y"),
 
 ### (d) Repeat the two approaches described in (b) and (c) above for ${X_1} \sim Gamma({\alpha _1},{\beta _1})$ and ${X_2} \sim Gamma({\alpha _2},{\beta _2})$. Note, unless $\beta_1$ = $\beta_2$, the resulting distribution of $Y$ is not friendly. Also be cautious of the support.
 
-The results from this experiment are similar to what we have seen in parts b and c of Problem 1. The method used in part b can be viewed in the first plot below. The convolution method of part c is the second plot. The initial values for the Gamma distribution can be seen in Table 2 below. I assigned the paramaters for the Gamma distributions randomly using a uniform distribution which gave unusual values for the Gamma parameters. Even with these unusual paramater values the Monte Carlo simulation did a good job at uncovering the true distribution. The last column of Table 2 shows the difference in the mean values obtained by method b and method c. With more standard inital values of the Gamma distribution the difference would be smaller. This problem demonstrates how we can uncover a distribution that may not have a simple analytical solution (the sum of two Gamma distributions where $\beta_1\neq\beta_2$). 
+The results from this experiment are similar to what we have seen in parts b and c of Problem 1. The method used in part b can be viewed in the first plot below. The convolution method of part c is the second plot. The initial values for the Gamma distribution can be seen in Table 2 below. I assigned the parameters for the Gamma distributions randomly using a uniform distribution which gave unusual values for the Gamma parameters. Even with these unusual parameter values the Monte Carlo simulation did a good job at uncovering the true distribution. The last column of Table 2 shows the difference in the mean values obtained by method b and method c. With more standard initial values of the Gamma distribution the difference would be smaller. This problem demonstrates how we can uncover a distribution that may not have a simple analytical solution (the sum of two Gamma distributions where $\beta_1\neq\beta_2$). 
 
 ```{r, echo=F, cache=T}
 
@@ -613,9 +612,9 @@ earn.min <-  min(earnings)
 
 The dollar earnings from any single block of 10 games has a range from a total winnings of $`r as.character(earn.max) ` to a total loss of $`r as.character(earn.min) `. When we average over `r as.character(N) ` blocks the over all expected winnings is `r earn.mean `.
 
-We can get a sense of how the distribution looks over the `r as.character(N) ` experiments by viewing the plots below. The histogram shows how the outcomes are distributed. The second plot shows the outcomes over the experiment. It is interesting to note that while the earnings from most blocks of 10 games hover around zero we obtain a fair amount of heavy losses which out weigh the wins. This can be seem more clearly in the frequancy table below.
+We can get a sense of how the distribution looks over the `r as.character(N) ` experiments by viewing the plots below. The histogram shows how the outcomes are distributed. The second plot shows the outcomes over the experiment. It is interesting to note that while the earnings from most blocks of 10 games hover around zero we obtain a fair amount of heavy losses which out weigh the wins. This can be seem more clearly in the frequency table below.
 
-This is not a good betting stratagy.
+This is not a good betting strategy.
 
 \bigskip
 
@@ -625,7 +624,8 @@ This is not a good betting stratagy.
 
 par(mfrow= c(1, 2), ps= 10, cex= 0.55, cex.main= 1.5)
 
-hist(earnings, main= "Histogram of Earnings", xlab= "Earnings", xlim= c(earn.min+100, earn.max+10000))
+hist(earnings, main= "Histogram of Earnings", xlab= "Earnings", 
+     xlim= c(earn.min+100, earn.max+10000))
 
 plot(earnings[1:10000], type="l", main= "plot of 10,000 Experiments", 
      ylab= "Earnings", ylim= c(earn.min+100, earn.max+10000))
