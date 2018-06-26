@@ -36,13 +36,25 @@ geometry: margin = 1.25in
 
 ---
 
-<!-- \AddToShipoutPictureFG{ -->
-<!--   \AtPageCenter{% or \AtTextCenter -->
-<!--     \makebox[0pt]{\rotatebox[origin=c]{45}{% -->
-<!--       \scalebox{5}{\texttransparent{0.05}{DRAFT}}% -->
-<!--     }} -->
-<!--   } -->
-<!-- } -->
+```{r, echo=F, message=F, warning=F}
+
+# Housekeeping ----------------------------------------------------------------
+
+rm(list= ls())
+cat("\014")
+
+library(summarytools)
+
+
+```
+
+```{r, echo=F, message=F, warning=F}
+
+# Import Data -----------------------------------------------------------------
+
+IPIA_Data <- read.csv("/Users/malooney/Google Drive/digitalLibrary/*Decesion_Theory/Decision_Theory/data/IPIA_Data.csv")
+
+```
 
 \newpage
 
@@ -51,3 +63,41 @@ geometry: margin = 1.25in
 # Introduction
 
 \onehalfspacing
+
+
+
+
+```{r}
+
+mean(IPIA_Data$Urography)
+sd(IPIA_Data$Urography)
+min(IPIA_Data$Urography)
+max(IPIA_Data$Urography)
+
+
+mean(IPIA_Data$Tomography)
+sd(IPIA_Data$Tomography)
+min(IPIA_Data$Tomography)
+max(IPIA_Data$Tomography)
+
+```
+
+```{r, echo=F, results='asis'}
+
+# Problem 3.c freq table ------------------------------------------------------
+diff <- abs(IPIA_Data$Urography- IPIA_Data$Tomography)
+freq(as.vector(diff), display.nas= FALSE, style= "rmarkdown", method = "pander", 
+     omit.headings =T)
+```
+
+
+
+
+
+
+
+
+
+
+
+
