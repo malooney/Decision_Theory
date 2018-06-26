@@ -31,7 +31,7 @@ header-includes:
 bibliography: paper_projectBib.bib
 csl: computational-economics.csl
 link-citations: true
-fontsize: 12pt
+fontsize: 10pt
 geometry: margin = 1.25in
 
 ---
@@ -67,18 +67,18 @@ IPIA_Data <- read.csv("/Users/malooney/Google Drive/digitalLibrary/*Decesion_The
 
 
 
-```{r}
+```{r, echo=F}
 
-mean(IPIA_Data$Urography)
-sd(IPIA_Data$Urography)
-min(IPIA_Data$Urography)
-max(IPIA_Data$Urography)
-
-
-mean(IPIA_Data$Tomography)
-sd(IPIA_Data$Tomography)
-min(IPIA_Data$Tomography)
-max(IPIA_Data$Tomography)
+# mean(IPIA_Data$Urography)
+# sd(IPIA_Data$Urography)
+# min(IPIA_Data$Urography)
+# max(IPIA_Data$Urography)
+# 
+# 
+# mean(IPIA_Data$Tomography)
+# sd(IPIA_Data$Tomography)
+# min(IPIA_Data$Tomography)
+# max(IPIA_Data$Tomography)
 
 ```
 
@@ -86,8 +86,44 @@ max(IPIA_Data$Tomography)
 
 # Problem 3.c freq table ------------------------------------------------------
 diff <- abs(IPIA_Data$Urography- IPIA_Data$Tomography)
-freq(as.vector(diff), display.nas= FALSE, style= "rmarkdown", method = "pander", 
+
+freq(as.vector(diff), report.nas= F, style= "rmarkdown",
      omit.headings =T)
+```
+
+```{r, echo=F, results='asis'}
+
+descr(IPIA_Data[,-1], style = "rmarkdown" , transpose = T, 
+      split.tables = 100, omit.headings = T)
+
+
+```
+
+```{r, echo=F, fig.height=4}
+
+par(mfrow= c(1, 2), ps= 10, cex= 0.55, cex.main= 1.5)
+
+hist(IPIA_Data$Tomography, 
+     prob = TRUE, 
+     col= rgb(234/255, 51/255, 35/255, alpha=0.25), 
+     main= "Density plot of Tomography")
+
+rug(IPIA_Data$Tomography)
+
+lines(density(IPIA_Data$Tomography), col="red")
+
+hist(IPIA_Data$Urography, 
+     prob = TRUE, 
+     col= rgb(117/255, 250/255, 76/255, alpha=0.25), 
+     main= "Density plot of Urography", ylim= c(0, 0.035))
+
+rug(IPIA_Data$Urography)
+
+lines(density(IPIA_Data$Urography), col="green")
+
+#legend(85, 0.026,  c("Tomography", "Urography"),
+#       lty=c(1, 1), col=c("red","green"))
+
 ```
 
 
@@ -101,3 +137,18 @@ freq(as.vector(diff), display.nas= FALSE, style= "rmarkdown", method = "pander",
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+# References:
