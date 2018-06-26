@@ -1,0 +1,53 @@
+---
+title: "A Replication Study on:"
+subtitle: "Bayesian inference for agreement measures"
+author:
+- "Lingjuan Qi"
+- "Matthew Aaron Looney"
+date: "June 25, 2018"
+
+output:
+  pdf_document:
+    fig_caption: yes
+    number_sections: yes
+    toc: no
+    toc_depth: 4
+  html_document:
+    toc: yes
+    toc_depth: '4'
+    
+abstract: "Insert Abstract Here"
+    
+header-includes:
+- \usepackage{graphicx}
+- \usepackage{rotating}
+- \usepackage{longtable}
+- \usepackage{amssymb,amsmath}
+- \usepackage{dcolumn}
+- \usepackage{setspace}
+- \usepackage{mathrsfs}
+- \usepackage{eso-pic,graphicx,transparent}
+
+bibliography: paper_projectBib.bib
+csl: computational-economics.csl
+link-citations: true
+fontsize: 12pt
+geometry: margin = 1.25in
+
+---
+
+<!-- \AddToShipoutPictureFG{ -->
+<!--   \AtPageCenter{% or \AtTextCenter -->
+<!--     \makebox[0pt]{\rotatebox[origin=c]{45}{% -->
+<!--       \scalebox{5}{\texttransparent{0.05}{DRAFT}}% -->
+<!--     }} -->
+<!--   } -->
+<!-- } -->
+
+\newpage
+
+---
+
+# Introduction
+
+\onehalfspacing
