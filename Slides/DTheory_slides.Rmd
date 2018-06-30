@@ -1,0 +1,67 @@
+---
+title: "A Replication Study"
+subtitle: "Bayesian Inference for Agreement Measures"
+author: 
+- Lingjuan Qi\inst{1}
+- Matthew Aaron Looney\inst{2}
+institute: |
+  | \inst{1} Department of Mechanical Engineering
+  | \inst{2} Department of Applied Economics
+  | Texas Tech University
+date: "July 3, 2018"
+output:
+  beamer_presentation:
+    fig_caption: yes
+    fonttheme: structurebold
+    theme: Montpellier
+    toc: no
+  ioslides_presentation: default
+  slidy_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+cat("\014")
+rm(list=ls())
+
+```
+
+
+# Goals of this Research
+
+## Replicate the results of:
+
+  * Bayesian Inference for Agreement Measures.
+
+    - By: Ignacio Vidal and Mário de Castro.
+
+    - Journal of biopharmaceutical statistics, 2016 p. 809-823.
+
+
+## The main ideas behind the paper:
+
+Methods for assessing agreement between a set of paired observations has been well studied in the literature. Most of the studies have focused on using a frequentist approach to calculate several measure of measurement agreement.
+
+## Assessing agreement between measurements:
+
+* A way to assess agreement between two random variables X and Y is the mean squared deviation (MSD).
+
+* Another measure of agreement between two random variables is the Concordance Correlation Coefficient ( CCC ).
+
+
+
+
+
+# The Model
+
+## Likelihood
+
+
+## Prior
+
+
+## Posterior
+
+
+
