@@ -182,7 +182,8 @@ res <- lm(Urography~ Tomography, data=IPIA_Data)
 plot(IPIA_Data$Tomography, IPIA_Data$Urography, 
      xlim=c(40, 110), 
      ylim=c(40, 110))
-abline(res)
+abline(res, col="blue")
+abline(1:110, 1:110, col="green")
 
 ```
 
