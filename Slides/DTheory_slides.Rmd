@@ -97,7 +97,7 @@ $${\rho _c} = 1 - {{MSD} \over {MSD{|_{{\sigma _{xy}} = 0}}}} = {{2{\sigma _{XY}
 
 * Two additional methods for assessing agreement that were explored by the authors are call the accuracy coefficient ($\chi_a$) and the precision coefficient ($\rho$).
 
-$${\chi _a} = {2 \over {\bar \omega  + {1 \over {\bar \omega }} + {v^2}}},\bar \omega  = {{{\sigma^2}_Y} \over {\sigma_X^2}},{v^2} = {{{{({\mu _X} - m{u_Y})}^2}} \over {{\sigma _X}{\sigma _Y}}}$$
+$${\chi _a} = {2 \over {\bar \omega  + {1 \over {\bar \omega }} + {v^2}}},\bar \omega  = {{{\sigma^2}_Y} \over {\sigma_X^2}},{v^2} = {{{{({\mu _X} - {\mu_Y})}^2}} \over {{\sigma _X}{\sigma _Y}}}$$
 
 $$\rho  = {{{\rho _c}} \over {{\chi _a}}}$$
 where $\rho$ is simply the Pearson correlation coefficient ($\rho=\frac{\sigma_{XY}}{\sigma_X\sigma_Y}$).
