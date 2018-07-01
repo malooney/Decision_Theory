@@ -122,6 +122,25 @@ CCC_100_100_105_100_125_80_main_results <- read_csv("/Users/malooney/Google Driv
 
 CCC_100_100_105_100_125_40_main_results <- read_csv("/Users/malooney/Google Drive/digitalLibrary/*Decesion_Theory/Decision_Theory/data/CCC_100_100_105_100_125_40_main_results.csv", col_types = cols(X1 = col_skip()))
 
+
+
+
+
+
+
+
+
+
+
+
+CCC_100_100_105_100_125_99_main_results <- read_csv("/Users/malooney/Google Drive/digitalLibrary/*Decesion_Theory/Decision_Theory/data/CCC_100_135_135_88_88_99_main_results.csv", col_types = cols(X1 = col_skip()))
+
+CCC_100_100_105_100_125_90_main_results <- read_csv("/Users/malooney/Google Drive/digitalLibrary/*Decesion_Theory/Decision_Theory/data/CCC_100_135_135_88_88_90_main_results.csv", col_types = cols(X1 = col_skip()))
+
+CCC_100_100_105_100_125_80_main_results <- read_csv("/Users/malooney/Google Drive/digitalLibrary/*Decesion_Theory/Decision_Theory/data/CCC_100_135_135_88_88_80_main_results.csv", col_types = cols(X1 = col_skip()))
+
+CCC_100_100_105_100_125_40_main_results <- read_csv("/Users/malooney/Google Drive/digitalLibrary/*Decesion_Theory/Decision_Theory/data/CCC_100_135_135_88_88_40_main_results.csv", col_types = cols(X1 = col_skip()))
+
   
 ```
 

@@ -25,6 +25,11 @@ knitr::opts_chunk$set(echo = FALSE)
 cat("\014")
 rm(list=ls())
 
+library(summarytools)
+library(MASS)
+library(MCMCpack)
+library(readr)
+
 ```
 
 
@@ -44,7 +49,6 @@ rm(list=ls())
 Methods for assessing agreement between a set of paired observations has been well studied in the literature. Most of the studies have focused on using a frequentist approach to calculate several measures of measurement agreement.
 
 
-
 ## A Motivating Example with Real World Data:
 
 Renal lithiasis (Kidney Stones) can be defined as the consequence of an alteration of the normal crystallization conditions of urine in the urinary tract. In a healthy individual, during the residence time of urine in the urinary tract, crystals either do not form or are so small they are eliminated uneventfully. Clinicians often employ diagnostic imaging techniques to quantify the size, shape, and likelihood the stones will pass through the system without incident.
@@ -56,6 +60,24 @@ There are two main imaging tools used by clinicians to assess renal lithiasis:
 * High-speed or dual energy Computerized Tomography (CT).
 
 * Intravenous Urography, which involves injecting dye into an arm vein and taking X-rays (intravenous pyelogram).
+
+
+## A Motivating Example with Real World Data:
+
+* The imaging costs associated with Computerized Tomography far out weigh the costs of imaging with alternative methods, including Intravenous Urography. 
+
+* The question is do these two imaging modalities provide equivalently adequate results in terms of imaging quality, accuracy and precession.
+
+* We need a way to assess how much agreement there is between measurements taken by Urography and Tomography.
+
+
+## A Motivating Example with Real World Data:
+
+* We have data on the inferior pelvic infundibular angle (IPIA) for 52 kidneys, evaluated by means of computerized tomography and urography.
+
+* We will use this data to determine the level of agreement between the two techniques.
+
+* We will return to this example later...
 
 
 
@@ -71,6 +93,15 @@ $$MSD = E\left[ {{{(X - Y)}^2}} \right] = {({\mu _x} - {\mu _y})^2} + \sigma _x^
 
 $${\rho _c} = 1 - {{MSD} \over {MSD{|_{{\sigma _{xy}} = 0}}}} = {{2{\sigma _{XY}}} \over {{{({\mu _X} - {\mu _Y})}^2} + \sigma _X^2 + \sigma _Y^2}}$$
 
+## Assessing Agreement Between Measurements:
+
+* Two additional methods for assessing agreement that were explored by the authors are call the accuracy coefficient ($\chi_a$) and the precision coefficient ($\rho$).
+
+$${\chi _a} = {2 \over {\bar \omega  + {1 \over {\bar \omega }} + {v^2}}},\bar \omega  = {{{\sigma^2}_Y} \over {\sigma_X^2}},{v^2} = {{{{({\mu _X} - m{u_Y})}^2}} \over {{\sigma _X}{\sigma _Y}}}$$
+
+$$\rho  = {{{\rho _c}} \over {{\chi _a}}}$$
+where $\rho$ is simply the Pearson correlation coefficient ($\rho=\frac{\sigma_{XY}}{\sigma_X\sigma_Y}$).
+
 
 # The Bayesian Model
 
@@ -81,8 +112,76 @@ $${\rho _c} = 1 - {{MSD} \over {MSD{|_{{\sigma _{xy}} = 0}}}} = {{2{\sigma _{XY}
 
 ## Prior
 
+### Jeffreys Prior
+
+
+### Independence Jefferys Prior
+
+
+
+### Reference Prior for $\rho$
+
 
 ## Posterior
+
+
+# Simulation Results
+
+
+
+
+# Inferior Pelvic Infundibular Angle Data
+
+## Kidney Anatomy
+
+![](~Slides/1677-5538-ibju-40-3-0337-gf01.jpg) ![](~Slides/image00796.jpeg)
+
+
+## Data Summary
+
+```{r, echo=F, results='asis'}
+
+# Import Data -----------------------------------------------------------------
+
+IPIA_Data <- read.csv("/Users/malooney/Google Drive/digitalLibrary/*Decesion_Theory/Decision_Theory/data/IPIA_Data.csv")
+
+descr(IPIA_Data[,-1], stats = c("n.valid", "mean", "q1", "med", "q3", "sd", "min", "max"), style = "rmarkdown", omit.headings = T, transpose = F)
+
+
+```
+
+## A visual assessment 
+
+* Regression line plot versus perfect agreement line (U = T).
+
+```{r, echo=F, fig.height=6}
+
+res <- lm(Urography~ Tomography, data=IPIA_Data)
+plot(IPIA_Data$Tomography, IPIA_Data$Urography, 
+     xlim=c(40, 110), 
+     ylim=c(40, 110), 
+     xlab="Tomography", 
+     ylab="Urography")
+abline(res, col="blue")
+abline(1:110, 1:110, col="green")
+legend(40, 108,  c("Regression line", "perfect agreement line (U = T)"), 
+       lty=c(1, 1), col=c("blue","green"))
+
+```
+
+## Kidney Data - Bayesian Inference for:
+
+* Mean Squared Deviation (MSD).
+
+* Concordance Correlation Coefficient ( CCC ).
+
+* Accuracy coefficient ($\chi_a$).
+
+* Precision coefficient ($\rho$).
+
+
+
+
 
 
 
