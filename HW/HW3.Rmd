@@ -53,16 +53,71 @@ Let $X \sim N(\mu, \Sigma)$ be a $p\times1$ random vector distributed as a multi
 
 ## (a) Write out a candidate conjugate prior for $(\mu, \Sigma)$ motivating your choice.
 
-Fortunatly, this problem is very related to our group project paper...
+Fortunately, this problem is very related to our group project paper...
 
 We start by writing the likelihood function for the multivariate normal:
 
 $$p(X|\mu ,\Sigma ) \propto {\Sigma ^{ - {n \over 2}}}\exp \left\{ { - {1 \over 2}\sum\limits_{i = 1}^n {{{({x_i} - \mu )}^\prime }{\Sigma ^{ - 1}}({x_i} - \mu )} } \right\}$$
 
 $$p(X|\mu ,\Sigma ) \propto {\Sigma ^{ - {n \over 2}}}\exp \left\{ { - {1 \over 2}\sum\limits_{i = 1}^n {tr({\Sigma ^{ - 1}}S)} } \right\}$$
+where $S$ is the matrix of sum of squares (sometimes called the scatter matrix). 
+$$S = \sum\limits_{i = 1}^n {({x_i} - \bar x){{({x_i} - \bar x)}^\prime }} $$
+
+The natural conjugate prior is normal-inverse-wishart:
+
+$$\Sigma {\rm{ }} \sim {\rm{ I}}{{\rm{W}}_{v0}}{\rm{ }}\left( {\Lambda _0^{ - 1}{\rm{ }}} \right)$$
+
+$$\mu |\Sigma  \sim N({\mu _0},\Sigma /{k_o})$$
+
+$$p(\mu ,\Sigma ) = NIW({\mu _0},{k_0},{\Lambda _0},{v_0})$$
+
+$$p(\mu ,\Sigma ) = {1 \over Z}{\Sigma ^{ - [({v_0} + df)/2 + 1]}}\exp \left\{ { - {1 \over 2}tr({\Lambda _0}{\Sigma ^{ - 1}}) - {{{k_0}} \over 2}{{(\mu  - {\mu _0})}^\prime }{\Sigma ^{ - 1}}(\mu  - {\mu _0})} \right\}$$
+
+where $z = {{{2^{{v_0}df/2}}{\Gamma _{df}}({v_0}/2){{(2\pi /{k_0})}^{df/2}}} \over {{\Lambda _0}^{{v_0}/2}}}$ is a constant and can be omitted from the model if we consider the prior up to a proportionality constant, as is typical.
 
 
+## (b) Derive the posterior joint distribution of $\mu$ and $\Sigma$ associated to the prior you propose: is it in the same family of the prior?
 
+$$p(\mu ,\Sigma |X,{\mu _0},{k_0}{\Lambda _0},{v_0}) = NIW(\mu ,\Sigma |{\mu _n},{k_n},{\Lambda _n},{v_n})$$
+where, ${u_n} = {{{k_0}\mu  + n\bar x} \over {{k_n}}}$, ${k_n} = {k_0} + n$, ${v_n} = {v_0} + n$, ${\Lambda _n} = {\Lambda _0} + S + {{{k_0}n} \over {{K_0} + n}}(\bar x - {\mu _0}){(\bar x - {\mu _0})^\prime }$.
+
+Therefore,
+
+$$p(\mu ,\Sigma |X) \propto L(X|\mu ,\Sigma )P(\mu ,\Sigma )$$
+
+$$p(\mu ,\Sigma |X) \propto {\Sigma ^{ - {n \over 2}\exp }}\left\{ { - {n \over 2}{{(\bar x - \mu )}^\prime }{\Sigma ^{ - 1}}(\bar X - \mu )} \right\}\exp \left\{ { - {1 \over 2}tr\left( {{\Sigma ^{ - 1}}\sum\limits_{i = 1}^n {({x_i} - \bar x} ){{({x_i} - \bar x)}^\prime }} \right)} \right\} \cdot $$
+$$\cdot{\Sigma ^{ - [\left\{ {({v_0} + df)/2} \right\} + 1]}}\exp \left\{ { - {1 \over 2}tr({\Lambda _0}{\Sigma ^{ - 1}}) - {{{k_0}} \over 2}{{(\mu  - {\mu _0})}^\prime }{\Sigma ^{ - 1}}(\mu  - {\mu _0})} \right\}$$
+
+$$ \propto {\Sigma ^{ - \left\{ {({v_n} + df)/2} \right\} + 1}}\exp \left\{ { - {1 \over 2}tr({\Phi _n}{\Sigma ^{ - 1}}) - {{{k_n}} \over 2}{{(\mu  - {\mu _n})}^\prime }{\rm{ }}{\Sigma ^{ - 1}}(\mu  - {\mu _n})} \right\}$$
+
+The posterior distribution is $p(\mu ,\Sigma |X)\sim Normal -Inverse Wishart(\mu_n, k_n^{-1},\Phi_n^{-1}, v_n )$
+
+Or more succinctly,
+
+$$\mu |\Sigma ,x,y\sim~{N_2}\left[ {{{(\bar x,\bar y)}^\prime },{n^{ - 1}}\Sigma } \right]$$
+
+$$\Sigma |x,y \sim I{W_2}\left( {{S^{ - 1}},n} \right)$$
+
+This is the same family as the prior.
+
+
+## (c) What is the marginal posterior distribution for the vector of means $\mu$?
+
+$$p(\mu ,\Sigma |X) \propto {\Sigma ^{ - ({v_n}/2) + 1}}\exp \left\{ { - {1 \over 2}tr({\Phi _n}{\Sigma ^{ - 1}}) - {{{k_n}} \over 2}{{(\mu  - {\mu _n})}^\prime }{\Sigma ^{ - 1}}(\mu  - {\mu _n})} \right\}$$
+
+$$ \propto {\Sigma ^{ - ({v_n}/2) + 1}}\exp \left\{ { - {1 \over 2}tr\left( {{\Phi _n} + {k_n}(\mu  - {\mu _n}){{(\mu  - {\mu _n})}^\prime }} \right){\Sigma ^{ - 1}}} \right\}$$
+
+where if we assume $\Phi_n+k_n(\mu-\mu_n)(\mu-\mu_n)^\prime=A$ then we arrive at the following result:
+
+$$p(\mu ,\Sigma |X) \propto {\Sigma ^{ - ({v_n}/2) + 1}}\exp \left\{ { - {1 \over 2}tr\left( {A{\Sigma ^{ - 1}}} \right)} \right\}$$
+
+We next need to integrate out $\Sigma$ to arrive at the marginal distribution for $\mu$.
+
+$$p(\mu |X) \propto \int_A {{\Sigma ^{ - ({v_n}/2) + 1}}\exp \left\{ { - {1 \over 2}tr\left( {A{\Sigma ^{ - 1}}} \right)} \right\}d\Sigma } $$
+
+$$p(\mu |X) \propto {t_{{v_n} - df + 1}}\left[ {{\mu _n},{{{\Lambda _n}} \over {{v_n} - df + 1}}} \right]$$
+
+This marginal is a multivariate t-distribution with mean $\mu$ and degrees of freedom equal to $(v_n-df+1)$.
 
 
 
@@ -73,16 +128,48 @@ $$p(X|\mu ,\Sigma ) \propto {\Sigma ^{ - {n \over 2}}}\exp \left\{ { - {1 \over 
 We investigate the effects of a bimodal posterior on the performance of Gibbs sampling. Suppose we have a statistical model with two-dimensional parameter $\theta=(\theta_1, \theta_2)^\prime$, and say $\theta$ has the following posterior distribution:
 
 $$\theta|Data~\frac{1}{2}N(\mu_1, \Sigma)+\frac{1}{2}N(\mu_2, \Sigma)$$
+
+\bigskip
+\bigskip
+
 Consider using Gibbs sampling to generate a sample from this posterior. Given the current state $\theta^{(t)}$, $\theta^{(t+1)}$ is generated through the following scheme:
+
+\bigskip
 
 (a) Sample $\theta_1^{(t+1)}$ from $p\theta_1|\theta_2^{t}, Data)$;
 
 (b) Sample $\theta_2^{(t+1)}$ from $p\theta_2|\theta_1^{t+1}, Data)$
 
-(c) Save $\theta^{(t+1)}=(\theta_1^{(t+1)}, \theta_2^{(t+1)})^\prime$.
+(c) Save $\theta^{(t+1)}=(\theta_1^{(t+1)}, \theta_2^{(t+1)})^\prime$
+
+\bigskip
 
 Derive the Gibbs updates and implement the sampling procedure using your R software. Run your procedure 10, 000 using $\mu_1=(0,0)^\prime$ and $\mu_2=(a,a)^\prime$, and $\Sigma=[(1,0)^\prime,(0,1)]$. Try using small and large values for $a$, for example $a \in (0, 1.5, 10)$. Compare the Gibbs sampling results to true samples drawn iid from the posterior and comment on your findings. Repeat the experiment using $\Sigma=[(1,0)^\prime,(0,\sigma^2)]$ for a large $a$ large and $\sigma$; comment on the results.
 
+\bigskip
+\bigskip
+
+The general algorithm for the Gibbs updating is as follows:
+
+\bigskip
+
+  * Initialize $\theta^{0} \sim q(\theta)$
+  
+  * for iteration $i=1,2,...,N...$
+  
+  * $\theta_1^{(1)} \sim p(\Theta_1=\theta_1|\Theta_2=\theta_2^{(i-1)}, \Theta_3=\theta_3^{(i-1)},...,\Theta_N=\theta_N^{(i-1)})$
+  
+  * $\theta_2^{(1)} \sim p(\Theta_2=\theta_2|\Theta_1=\theta_1^{(i-1)}, \Theta_3=\theta_3^{(i-1)},...,\Theta_N=\theta_N^{(i-1)})$
+  
+  * $\vdots$
+
+  * $\theta_N^{(1)} \sim p(\Theta_N=\theta_N|\Theta_1=\theta_1^{(i-1)}, \Theta_2=\theta_2^{(i-1)},...,\Theta_N=\theta_N^{(i-1)})$
+  
+  * End
+  
+\bigskip
+  
+The above algorithm is used to iterate back and forth between multivariate (bivariate in this case) distributions until convergence has been achieved. In general the Gibbs sampler is a good starting point when utilizing computation methods to uncover distributions. There are occasions where the Gibbs sample will fail. We will see in this problem that this is such a case...
 
 ```{r, echo=F, cache=F}
 
@@ -145,7 +232,8 @@ return(as.data.frame(mu_mat.mc))
 
 ```
 
-```{r, echo=F, warning=F, message=F}
+
+```{r, echo=F, warning=F, message=F, cache=T, fig.height=3.5}
 
 gibbs_0.0.0.0.1.0.0.1 <- gibbs(N=10000, a1=0, a2=0, b1=0, b2=0, c1=1, c2=0, c3=0, c4=1)
 
@@ -156,7 +244,7 @@ gibbs1.plot <- ggplot(gibbs_0.0.0.0.1.0.0.1,
   theme_bw()+ 
   labs(title="Gibbs sampling results",
         x =expression(mu[x]), y = expression(mu[y]))+
-  annotate("text", x = 3, y = 0, size=3, angle = 270,
+  annotate("text", x = 4, y = 0, size=2.75, angle = 270,
            label = "mu1=(0,0)'; mu2=(0,0)'; Sigma=[(1,0)'(0,1)]")+ 
   theme(text = element_text(size = 8), 
         plot.title = element_text(hjust = 0.5))+ 
@@ -175,7 +263,7 @@ mc1.plot <- ggplot(mc_0.0.0.0.1.0.0.1,
   theme_bw() + 
   labs(title="True samples drawn iid \n from the posterior",
         x =expression(mu[x]), y = expression(mu[y]))+
-  annotate("text", x = 3, y = 0, size=3, angle = 270,
+  annotate("text", x = 4, y = 0, size=2.75, angle = 270,
            label = "mu1=(0,0)'; mu2=(0,0)'; Sigma=[(1,0)'(0,1)]")+ 
   theme(text = element_text(size = 8), 
         plot.title = element_text(hjust = 0.5))+ 
@@ -189,11 +277,11 @@ grid.arrange(gibbs1.plot, mc1.plot, nrow= 1, ncol= 2)
 
 ```
 
-The above plots show the results from running a Gibbs sampler and a plot from taking true samples drawn iid from the posterior distribution. The paramater values for each plot are $\mu_1=(0,0)^\prime; \mu_2=(0,0)^\prime$; $\Sigma  = \left( {\begin{array}{*{20}{c}} 1&0 \\ 0&1 \end{array}} \right)$.
+The above plots show the results from running a Gibbs sampler and a plot from taking true samples drawn iid from the posterior distribution. The parameter values for each plot are $\mu_1=(0,0)^\prime; \mu_2=(0,0)^\prime$; $\Sigma  = \left( {\begin{array}{*{20}{c}} 1&0 \\ 0&1 \end{array}} \right)$.
 
-\bigskip
+The below plots show the results from running a Gibbs sampler and a plot from taking true samples drawn iid from the posterior distribution. The parameter values for each plot are $\mu_1=(0,0)^\prime; \mu_2=(10,10)^\prime$; $\Sigma  = \left( {\begin{array}{*{20}{c}} 1&0 \\ 0&1 \end{array}} \right)$. We can clearly see how the Gibbs sampler fails to uncover the true bivariate density while the true samples drawn iid from the posterior are well resolved into two distributions.
 
-```{r, echo=F, warning=F, message=F}
+```{r, echo=F, warning=F, message=F, cache=T, fig.height=3.85}
 
 gibbs_0.0.10.10.1.0.0.1 <- gibbs(N=10000, a1=0, a2=0, b1=10, b2=10, c1=1, c2=0, c3=0, c4=1)
 
@@ -204,7 +292,7 @@ gibbs2.plot <- ggplot(gibbs_0.0.10.10.1.0.0.1,
   theme_bw()+ 
   labs(title="Gibbs sampling results",
         x =expression(mu[x]), y = expression(mu[y]))+
-  annotate("text", x = 20, y = 8, size=3, angle = 270,
+  annotate("text", x = 20, y = 8, size=2.75, angle = 270,
            label = "mu1=(0,0)'; mu2=(10,10)'; Sigma=[(1,0)'(0,1)]")+ 
   theme(text = element_text(size = 8), 
         plot.title = element_text(hjust = 0.5))+
@@ -223,7 +311,7 @@ mc2.plot <- ggplot(mc_0.0.10.10.1.0.0.1,
   theme_bw() + 
   labs(title="True samples drawn iid \n from the posterior",
         x =expression(mu[x]), y = expression(mu[y]))+
-  annotate("text", x = 20, y = 8, size=3, angle = 270,
+  annotate("text", x = 20, y = 8, size=2.75, angle = 270,
            label = "mu1=(0,0)'; mu2=(10,10)'; Sigma=[(1,0)'(0,1)]")+ 
   theme(text = element_text(size = 8), 
         plot.title = element_text(hjust = 0.5))+
@@ -237,16 +325,14 @@ grid.arrange(gibbs2.plot, mc2.plot, nrow= 1, ncol= 2)
 
 ```
 
-The above plots show the results from running a Gibbs sampler and a plot from taking true samples drawn iid from the posterior distribution. The paramater values for each plot are $\mu_1=(0,0)^\prime; \mu_2=(10,10)^\prime$; $\Sigma  = \left( {\begin{array}{*{20}{c}} 1&0 \\ 0&1 \end{array}} \right)$. We can clearly see how the Gibbs sampler fails to uncover the true bivariate density while the true samples drawn iid from the posterior are well resolved into two distributions.
-
 \bigskip
 
-The below plots show the results from running a Gibbs sampler and a plot from taking true samples drawn iid from the posterior distribution. The paramater values for each plot are $\mu_1=(0,0)^\prime; \mu_2=(15,10)^\prime$; $\Sigma  = \left( {\begin{array}{*{20}{c}} 1&0 \\ 0&10 \end{array}} \right)$. We can again clearly see how the Gibbs sampler fails to uncover the true bivariate density while the true samples drawn iid from the posterior are well resolved into two distributions. We can see the means of the two distributions from the iid drawn samples. The density has spread out due to the larger variance but the Gibbs sample does not resolve into two seperate densities, it simply spreads out. 
+The below plots show the results from running a Gibbs sampler and a plot from taking true samples drawn iid from the posterior distribution. The parameter values for each plot are $\mu_1=(0,0)^\prime; \mu_2=(15,10)^\prime$; $\Sigma  = \left( {\begin{array}{*{20}{c}} 1&0 \\ 0&10 \end{array}} \right)$. We can again clearly see how the Gibbs sampler fails to uncover the true bivariate density while the true samples drawn iid from the posterior are well resolved into two distributions. We can see the means of the two distributions from the iid drawn samples. The density has spread out due to the larger variance but the Gibbs sample does not resolve into two separate densities, it simply spreads out. 
 
 The Gibbs sampler fails in this case.
 
 
-```{r, echo=F, warning=F, message=F}
+```{r, echo=F, warning=F, message=F, cache=T, fig.height=4}
 
 gibbs_0.0.15.10.1.0.0.10 <- gibbs(N=10000, a1=0, a2=0, b1=15, b2=10, c1=1, c2=0, c3=0, c4=10)
 
@@ -257,7 +343,7 @@ gibbs3.plot <- ggplot(gibbs_0.0.15.10.1.0.0.10,
   theme_bw()+ 
   labs(title="Gibbs sampling results",
         x =expression(mu[x]), y = expression(mu[y]))+
-  annotate("text", x = 25, y = 8, size=3, angle = 270,
+  annotate("text", x = 25, y = 8, size=2.75, angle = 270,
            label = "mu1=(0,0)'; mu2=(15,10)'; Sigma=[(1,0)'(0,10)]")+ 
   theme(text = element_text(size = 8), 
         plot.title = element_text(hjust = 0.5))+
@@ -276,7 +362,7 @@ mc3.plot <- ggplot(mc_0.0.15.10.1.0.0.10,
   theme_bw() + 
   labs(title="True samples drawn iid \n from the posterior",
         x =expression(mu[x]), y = expression(mu[y]))+
-  annotate("text", x = 25, y = 8, size=3, angle = 270,
+  annotate("text", x = 25, y = 8, size=2.75, angle = 270,
            label = "mu1=(0,0)'; mu2=(15,10)'; Sigma=[(1,0)'(0,10)]")+ 
   theme(text = element_text(size = 8), 
         plot.title = element_text(hjust = 0.5))+
@@ -290,8 +376,9 @@ grid.arrange(gibbs3.plot, mc3.plot, nrow= 1, ncol= 2)
 
 ```
 
+\newpage
 
-
+# Appendix: R Code
 
 
 
