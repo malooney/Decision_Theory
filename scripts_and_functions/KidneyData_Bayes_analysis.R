@@ -1,4 +1,12 @@
 
+# Housekeeping ----------------------------------------------------------------
+rm(list= ls())
+cat("\014")
+
+library(MCMCpack)
+
+source("/Users/malooney/Google Drive/digitalLibrary/*Decesion_Theory/Decision_Theory/scripts_and_functions/agreement_Stats.R")
+
 
 # Import Data -----------------------------------------------------------------
 
@@ -33,3 +41,5 @@ for(i in seq_len(outer.sim)){
   main_results[i,6] <- mean(Result[,4]/sqrt(Result[,3]*Result[,5]))
   main_results[i, 7] <- mean(2* Result[,"cov_xy"]/  ( (Result[,"X"]- Result[,"Y"])^2 + Result[,"sig2_x"]+ Result[,"sig2_y"] ) )
 }
+
+write.csv(main_results, "/Users/malooney/Google Drive/digitalLibrary/*Decesion_Theory/Decision_Theory/data/JP_KidneyData_Bayes.csv")

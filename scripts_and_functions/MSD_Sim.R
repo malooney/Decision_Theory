@@ -15,6 +15,6 @@ MSD_Sim <- function(data, plot_MSD=0){
   } else {}
   CIL <- mean(MSD)-1.96*sd(MSD)
   CIU <- mean(MSD)+1.96*sd(MSD)
-  list(c(MSD=mean(MSD), CIL=CIL, CIU=CIU))
+  list(c(MSD=median(MSD), CIL=CIL, CIU=CIU))
 
 }

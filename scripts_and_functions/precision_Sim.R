@@ -22,6 +22,6 @@ precision_Sim <- function(data, plot_precision=0){
   } else {}
   CIL <- mean(precision)-1.96*sd(precision)
   CIU <- mean(precision)+1.96*sd(precision)
-  list(c(precision=mean(precision), CIL=CIL, CIU=CIU))
+  list(c(precision=median(precision), CIL=CIL, CIU=CIU))
   
 }

@@ -48,6 +48,18 @@ library(readr)
 
 Methods for assessing agreement between a set of paired observations has been well studied in the literature. Most of the studies have focused on using a frequentist approach to calculate several measures of measurement agreement.
 
+## Outline
+
+* A Motivating Example with Real World Data
+
+* Assessing Agreement Between Measurements
+
+* The Bayesian Model
+
+* Simulation Results
+
+* Inferior Pelvic Infundibular Angle - Real Data
+
 
 ## A Motivating Example with Real World Data:
 

@@ -15,6 +15,6 @@ CCC_Sim <- function(data, plot_CCC=0){
   
   CIL <- mean(CCC*100)-1.96*sd(CCC*100)
   CIU <- mean(CCC*100)+1.96*sd(CCC*100)
-  list(c(CCC=mean(CCC*100), CIL=CIL, CIU=CIU))
+  list(c(CCC=median(CCC*100), CIL=CIL, CIU=CIU))
   
 }
