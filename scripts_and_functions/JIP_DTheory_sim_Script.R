@@ -35,7 +35,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1)*100
+    Sig.1.post <- riwish(sample.size-1, S.1)#*100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -80,7 +80,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1)*100
+    Sig.1.post <- riwish(sample.size-1, S.1)#*100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -125,7 +125,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1)*100
+    Sig.1.post <- riwish(sample.size-1, S.1)#*100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -171,7 +171,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1)*100
+    Sig.1.post <- riwish(sample.size-1, S.1)#*100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -226,7 +226,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)# *100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -271,7 +271,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)# *100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -316,7 +316,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)# *100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -362,7 +362,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)# *100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -419,7 +419,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)# *100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -464,7 +464,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)# *100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -509,7 +509,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)# *100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -555,7 +555,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)# *100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -608,7 +608,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)# *100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -653,7 +653,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)# *100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -698,7 +698,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)# *100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -744,7 +744,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)# *100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -819,7 +819,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)# *100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -864,7 +864,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)# *100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -909,7 +909,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)# *100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -955,7 +955,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)#* 100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -1008,7 +1008,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)# *100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -1053,7 +1053,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1) *100
+    Sig.1.post <- riwish(sample.size-1, S.1)# *100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -1098,7 +1098,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1)*100
+    Sig.1.post <- riwish(sample.size-1, S.1)#*100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -1144,7 +1144,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1)*100
+    Sig.1.post <- riwish(sample.size-1, S.1)#*100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -1199,7 +1199,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1)*100
+    Sig.1.post <- riwish(sample.size-1, S.1)#*100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -1244,7 +1244,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1)*100
+    Sig.1.post <- riwish(sample.size-1, S.1)#*100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -1289,7 +1289,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1)*100
+    Sig.1.post <- riwish(sample.size-1, S.1)#*100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 
@@ -1335,7 +1335,7 @@ colnames(main_results) <- c("X", "Y", "sig2_x", "cov_xy", "sig2_y", "rho",
 for(i in seq_len(outer.sim)){ 
   
   for(j in seq_len(inner.sim)){ 
-    Sig.1.post <- riwish(sample.size-1, S.1)*100
+    Sig.1.post <- riwish(sample.size-1, S.1)#*100
     Result[j, 3:5] = c( Sig.1.post[1,1], Sig.1.post[1,2], Sig.1.post[2,2]) 
     Result[j, c(1,2)]  = mvrnorm(n= 1, mu= c(mean(sim.data.1[,1] ), 
                                              mean(sim.data.1[,2] )), 

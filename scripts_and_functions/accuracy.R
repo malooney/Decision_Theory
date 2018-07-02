@@ -15,7 +15,7 @@ accuracy <- function(data, plot_accuracy=0){
   if(plot_accuracy==1) {
     hist(accuracy, prob = T, main="Histogram of Accuracy", xlab="Accuracy")
   } else {}
-  
-  mean(accuracy)
-  
+  CIL <- mean(accuracy)-1.96*sd(accuracy)
+  CIU <- mean(accuracy)+1.96*sd(accuracy)
+  list(c(accuracy=mean(accuracy), CIL=CIL, CIU=CIU))
 }

@@ -17,7 +17,6 @@ accuracy_Sim <- function(data, plot_accuracy=0){
   } else {}
   CIL <- mean(accuracy)-1.96*sd(accuracy)
   CIU <- mean(accuracy)+1.96*sd(accuracy)
-  
   list(c(accuracy=mean(accuracy), CIL=CIL, CIU=CIU))
   
 }

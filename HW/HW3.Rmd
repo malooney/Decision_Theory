@@ -1,0 +1,299 @@
+---
+title: "STAT 5370 – Decision Theory"
+subtitle: "Homework 3"
+author: "Matthew Aaron Looney"
+date: "7/2/2018"
+output: 
+  pdf_document: 
+    fig_caption: yes
+    toc: yes
+    toc_depth: 4
+header-includes:
+- \usepackage{graphicx}
+- \usepackage{rotating}
+- \usepackage{longtable}
+- \usepackage{amssymb,amsmath}
+- \usepackage{dcolumn}
+- \usepackage{setspace}
+- \usepackage{mathrsfs}
+- \usepackage{eso-pic,graphicx,transparent}
+
+bibliography: DTheory_HW2Bib.bib
+csl: computational-economics.csl
+link-citations: true
+fontsize: 10pt
+geometry: margin = 1.25in
+---
+
+```{r, echo=F, warning=F, message=F, cache=F}
+
+# Housekeeping ----------------------------------------------------------------
+rm(list= ls())
+cat("\014")
+
+#set.seed(1)
+
+library(summarytools)
+library(MASS)
+library(emdbook)
+library(gridExtra)
+library(ggplot2)
+library(ggExtra)
+
+```
+
+
+\newpage
+
+<!-- \onehalfspacing -->
+
+# Problem 1: Multivariate Normal with unknow $\mu$ and $\Sigma$
+
+Let $X \sim N(\mu, \Sigma)$ be a $p\times1$ random vector distributed as a multivariate normal with mean $\mu$ and variance-covariance $\Sigma$, where both $\mu$ and $\Sigma$ are unknown.
+
+## (a) Write out a candidate conjugate prior for $(\mu, \Sigma)$ motivating your choice.
+
+Fortunatly, this problem is very related to our group project paper...
+
+We start by writing the likelihood function for the multivariate normal:
+
+$$p(X|\mu ,\Sigma ) \propto {\Sigma ^{ - {n \over 2}}}\exp \left\{ { - {1 \over 2}\sum\limits_{i = 1}^n {{{({x_i} - \mu )}^\prime }{\Sigma ^{ - 1}}({x_i} - \mu )} } \right\}$$
+
+$$p(X|\mu ,\Sigma ) \propto {\Sigma ^{ - {n \over 2}}}\exp \left\{ { - {1 \over 2}\sum\limits_{i = 1}^n {tr({\Sigma ^{ - 1}}S)} } \right\}$$
+
+
+
+
+
+
+\newpage
+
+# Problem 2: Gibbs Sampling Problem
+
+We investigate the effects of a bimodal posterior on the performance of Gibbs sampling. Suppose we have a statistical model with two-dimensional parameter $\theta=(\theta_1, \theta_2)^\prime$, and say $\theta$ has the following posterior distribution:
+
+$$\theta|Data~\frac{1}{2}N(\mu_1, \Sigma)+\frac{1}{2}N(\mu_2, \Sigma)$$
+Consider using Gibbs sampling to generate a sample from this posterior. Given the current state $\theta^{(t)}$, $\theta^{(t+1)}$ is generated through the following scheme:
+
+(a) Sample $\theta_1^{(t+1)}$ from $p\theta_1|\theta_2^{t}, Data)$;
+
+(b) Sample $\theta_2^{(t+1)}$ from $p\theta_2|\theta_1^{t+1}, Data)$
+
+(c) Save $\theta^{(t+1)}=(\theta_1^{(t+1)}, \theta_2^{(t+1)})^\prime$.
+
+Derive the Gibbs updates and implement the sampling procedure using your R software. Run your procedure 10, 000 using $\mu_1=(0,0)^\prime$ and $\mu_2=(a,a)^\prime$, and $\Sigma=[(1,0)^\prime,(0,1)]$. Try using small and large values for $a$, for example $a \in (0, 1.5, 10)$. Compare the Gibbs sampling results to true samples drawn iid from the posterior and comment on your findings. Repeat the experiment using $\Sigma=[(1,0)^\prime,(0,\sigma^2)]$ for a large $a$ large and $\sigma$; comment on the results.
+
+
+```{r, echo=F, cache=F}
+
+gibbs <- function(N=10000, a1, a2, b1, b2, c1, c2, c3, c4){
+#Gibbs sampling method
+
+mus <- list( mu1=c(a1,a1), mu2=c(b1,b2))
+S <- list( s1=c(c1,c2,c3,c4), s2=c(c1,c2,c3,c4) )
+prob <- c(0.5,0.5)
+mu_mat <- matrix(0, nrow=N, ncol=2)
+mu_mat[1, 1:2] <- c(-1, -1) 
+delta <- 1
+
+
+for(i in 1:N){
+  mu_mat[i, 1:2] <- mvrnorm(n=1, 
+                   mu= as.vector(unlist(mus[delta])), 
+                   Sigma= matrix(unlist(S[delta]), nrow=2)
+                   )
+  p1 <- prob[1]* dmvnorm(mu_mat[i, 1:2], 
+                         mu= as.vector(unlist(mus[1])),
+                         Sigma= matrix(unlist(S[1]), nrow=2)
+                         )
+  p2 <- prob[2]* dmvnorm(mu_mat[i, 1:2], 
+                         mu= as.vector(unlist(mus[2])),
+                         Sigma= matrix(unlist(S[2]), nrow=2) 
+                         )
+  
+  psum <- p1+ p2
+  probd <- c(p1, p2)/ psum
+  
+  delta <- sample(1:2, prob=probd, size=1, replace=TRUE)
+}
+colnames(mu_mat) <- c("X", "Y")
+return(as.data.frame(mu_mat))
+}
+
+
+
+
+mc <- function(N=10000, a1, a2, b1, b2, c1, c2, c3, c4){
+#True samples drawn iid from the posterior
+  
+d <- sample(1:2, prob=c(0.5,0.5), size=N, replace=T)
+mus <- list( mu1=c(a1,a2), mu2=c(b1,b2))
+S <- list( s1=c(c1,c2,c3,c4), s2=c(c1,c2,c3,c4) )
+mu_mat.mc <- matrix(0, nrow=N, ncol=2)
+
+for(i in seq_len(N)){
+mu_mat.mc[i, 1:2] <- mvrnorm(n=1, 
+                  mu= as.vector(unlist(mus[d[i]])), 
+                  Sigma= matrix(unlist(S[d[i]]), nrow=2) 
+                )
+}
+colnames(mu_mat.mc) <- c("X", "Y")
+return(as.data.frame(mu_mat.mc))
+}
+
+
+
+```
+
+```{r, echo=F, warning=F, message=F}
+
+gibbs_0.0.0.0.1.0.0.1 <- gibbs(N=10000, a1=0, a2=0, b1=0, b2=0, c1=1, c2=0, c3=0, c4=1)
+
+gibbs1.plot <- ggplot(gibbs_0.0.0.0.1.0.0.1, 
+                      aes(x=gibbs_0.0.0.0.1.0.0.1$X, 
+                          y=gibbs_0.0.0.0.1.0.0.1$Y) ) + 
+  geom_hex(bins = 200) +
+  theme_bw()+ 
+  labs(title="Gibbs sampling results",
+        x =expression(mu[x]), y = expression(mu[y]))+
+  annotate("text", x = 3, y = 0, size=3, angle = 270,
+           label = "mu1=(0,0)'; mu2=(0,0)'; Sigma=[(1,0)'(0,1)]")+ 
+  theme(text = element_text(size = 8), 
+        plot.title = element_text(hjust = 0.5))+ 
+  xlim(-4, 4)+ 
+  ylim(-4, 4)
+
+gibbs1.plot <- ggMarginal(gibbs1.plot, type = "histogram", fill="transparent")
+
+# -----------------------------------------------------------------------------
+mc_0.0.0.0.1.0.0.1 <- mc(N=10000, a1=0, a2=0, b1=0, b2=0, c1=1, c2=0, c3=0, c4=1)
+
+mc1.plot <- ggplot(mc_0.0.0.0.1.0.0.1, 
+                aes(x=mc_0.0.0.0.1.0.0.1$X, 
+                    y=mc_0.0.0.0.1.0.0.1$Y) ) +
+  geom_hex(bins = 200) +
+  theme_bw() + 
+  labs(title="True samples drawn iid \n from the posterior",
+        x =expression(mu[x]), y = expression(mu[y]))+
+  annotate("text", x = 3, y = 0, size=3, angle = 270,
+           label = "mu1=(0,0)'; mu2=(0,0)'; Sigma=[(1,0)'(0,1)]")+ 
+  theme(text = element_text(size = 8), 
+        plot.title = element_text(hjust = 0.5))+ 
+  xlim(-4, 4)+ 
+  ylim(-4, 4)
+
+mc1.plot <- ggMarginal(mc1.plot, type = "histogram", fill="transparent")
+
+grid.arrange(gibbs1.plot, mc1.plot, nrow= 1, ncol= 2)
+
+
+```
+
+The above plots show the results from running a Gibbs sampler and a plot from taking true samples drawn iid from the posterior distribution. The paramater values for each plot are $\mu_1=(0,0)^\prime; \mu_2=(0,0)^\prime$; $\Sigma  = \left( {\begin{array}{*{20}{c}} 1&0 \\ 0&1 \end{array}} \right)$.
+
+\bigskip
+
+```{r, echo=F, warning=F, message=F}
+
+gibbs_0.0.10.10.1.0.0.1 <- gibbs(N=10000, a1=0, a2=0, b1=10, b2=10, c1=1, c2=0, c3=0, c4=1)
+
+gibbs2.plot <- ggplot(gibbs_0.0.10.10.1.0.0.1, 
+                      aes(x=gibbs_0.0.10.10.1.0.0.1$X, 
+                          y=gibbs_0.0.10.10.1.0.0.1$Y) ) + 
+  geom_hex(bins = 200) +
+  theme_bw()+ 
+  labs(title="Gibbs sampling results",
+        x =expression(mu[x]), y = expression(mu[y]))+
+  annotate("text", x = 20, y = 8, size=3, angle = 270,
+           label = "mu1=(0,0)'; mu2=(10,10)'; Sigma=[(1,0)'(0,1)]")+ 
+  theme(text = element_text(size = 8), 
+        plot.title = element_text(hjust = 0.5))+
+  xlim(-6, 20)+
+  ylim(-6, 20)
+
+gibbs2.plot <- ggMarginal(gibbs2.plot, type = "histogram", fill="transparent")
+
+# -----------------------------------------------------------------------------
+mc_0.0.10.10.1.0.0.1 <- mc(N=10000, a1=0, a2=0, b1=10, b2=10, c1=1, c2=0, c3=0, c4=1)
+
+mc2.plot <- ggplot(mc_0.0.10.10.1.0.0.1, 
+                aes(x=mc_0.0.10.10.1.0.0.1$X, 
+                    y=mc_0.0.10.10.1.0.0.1$Y) ) +
+  geom_hex(bins = 200) +
+  theme_bw() + 
+  labs(title="True samples drawn iid \n from the posterior",
+        x =expression(mu[x]), y = expression(mu[y]))+
+  annotate("text", x = 20, y = 8, size=3, angle = 270,
+           label = "mu1=(0,0)'; mu2=(10,10)'; Sigma=[(1,0)'(0,1)]")+ 
+  theme(text = element_text(size = 8), 
+        plot.title = element_text(hjust = 0.5))+
+  xlim(-6, 20)+
+  ylim(-6, 20)
+
+mc2.plot <- ggMarginal(mc2.plot, type = "histogram", fill="transparent")
+
+grid.arrange(gibbs2.plot, mc2.plot, nrow= 1, ncol= 2)
+
+
+```
+
+The above plots show the results from running a Gibbs sampler and a plot from taking true samples drawn iid from the posterior distribution. The paramater values for each plot are $\mu_1=(0,0)^\prime; \mu_2=(10,10)^\prime$; $\Sigma  = \left( {\begin{array}{*{20}{c}} 1&0 \\ 0&1 \end{array}} \right)$. We can clearly see how the Gibbs sampler fails to uncover the true bivariate density while the true samples drawn iid from the posterior are well resolved into two distributions.
+
+\bigskip
+
+The below plots show the results from running a Gibbs sampler and a plot from taking true samples drawn iid from the posterior distribution. The paramater values for each plot are $\mu_1=(0,0)^\prime; \mu_2=(15,10)^\prime$; $\Sigma  = \left( {\begin{array}{*{20}{c}} 1&0 \\ 0&10 \end{array}} \right)$. We can again clearly see how the Gibbs sampler fails to uncover the true bivariate density while the true samples drawn iid from the posterior are well resolved into two distributions. We can see the means of the two distributions from the iid drawn samples. The density has spread out due to the larger variance but the Gibbs sample does not resolve into two seperate densities, it simply spreads out. 
+
+The Gibbs sampler fails in this case.
+
+
+```{r, echo=F, warning=F, message=F}
+
+gibbs_0.0.15.10.1.0.0.10 <- gibbs(N=10000, a1=0, a2=0, b1=15, b2=10, c1=1, c2=0, c3=0, c4=10)
+
+gibbs3.plot <- ggplot(gibbs_0.0.15.10.1.0.0.10, 
+                      aes(x=gibbs_0.0.15.10.1.0.0.10$X, 
+                          y=gibbs_0.0.15.10.1.0.0.10$Y) ) + 
+  geom_hex(bins = 200) +
+  theme_bw()+ 
+  labs(title="Gibbs sampling results",
+        x =expression(mu[x]), y = expression(mu[y]))+
+  annotate("text", x = 25, y = 8, size=3, angle = 270,
+           label = "mu1=(0,0)'; mu2=(15,10)'; Sigma=[(1,0)'(0,10)]")+ 
+  theme(text = element_text(size = 8), 
+        plot.title = element_text(hjust = 0.5))+
+  xlim(-10, 25)+
+  ylim(-10, 25)
+
+gibbs3.plot <- ggMarginal(gibbs3.plot, type = "histogram", fill="transparent")
+
+# -----------------------------------------------------------------------------
+mc_0.0.15.10.1.0.0.10 <- mc(N=10000, a1=0, a2=0, b1=15, b2=10, c1=1, c2=0, c3=0, c4=10)
+
+mc3.plot <- ggplot(mc_0.0.15.10.1.0.0.10, 
+                aes(x=mc_0.0.15.10.1.0.0.10$X, 
+                    y=mc_0.0.15.10.1.0.0.10$Y) ) +
+  geom_hex(bins = 200) +
+  theme_bw() + 
+  labs(title="True samples drawn iid \n from the posterior",
+        x =expression(mu[x]), y = expression(mu[y]))+
+  annotate("text", x = 25, y = 8, size=3, angle = 270,
+           label = "mu1=(0,0)'; mu2=(15,10)'; Sigma=[(1,0)'(0,10)]")+ 
+  theme(text = element_text(size = 8), 
+        plot.title = element_text(hjust = 0.5))+
+  xlim(-10, 25)+
+  ylim(-10, 25)
+
+mc3.plot <- ggMarginal(mc3.plot, type = "histogram", fill="transparent")
+
+grid.arrange(gibbs3.plot, mc3.plot, nrow= 1, ncol= 2)
+
+
+```
+
+
+
+
+
+
+
+

@@ -12,6 +12,8 @@ CCC <- function(data, plot_CCC=0){
   if(plot_CCC==1) {
     hist(CCC, prob = T, main="Histogram of CCC", xlab="CCC")
     } else {}
-  mean(CCC)
+  CIL <- mean(CCC)-1.96*sd(CCC)
+  CIU <- mean(CCC)+1.96*sd(CCC)
+  list(c(CCC=mean(CCC), CIL=CIL, CIU=CIU))
   
 }

@@ -1,6 +1,6 @@
 
 
-ccc.ml <- function (x, y, ci = "z-transform", conf.level = 0.95, na.rm = FALSE) 
+ccc.Freq <- function (x, y, ci = "z-transform", conf.level = 0.95, na.rm = FALSE) 
 {
   dat <- data.frame(x, y)
   if (na.rm) 
