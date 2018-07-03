@@ -19,9 +19,8 @@ precision_Sim <- function(data, plot_precision=0){
   
   if(plot_precision==1) {
     hist(precision, prob = T, main="Histogram of Precision", xlab="Precision")
-  } else {}
-  CIL <- mean(precision)-1.96*sd(precision)
+  } else {  CIL <- mean(precision)-1.96*sd(precision)
   CIU <- mean(precision)+1.96*sd(precision)
   list(c(precision=median(precision), CIL=CIL, CIU=CIU))
-  
+  }
 }

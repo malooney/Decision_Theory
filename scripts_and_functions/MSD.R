@@ -13,8 +13,10 @@ MSD <- function(data, plot_MSD=0){
   
   if(plot_MSD==1) {
     hist(MSD, prob = T, main="Histogram of MSD", xlab="MSD")
-  } else {}
-  CIL <- mean(MSD)-1.96*sd(MSD)
-  CIU <- mean(MSD)+1.96*sd(MSD)
-  list(c(MSD=mean(MSD), CIL=CIL, CIU=CIU))
+  } else {
+    CIL <- mean(MSD)-1.96*sd(MSD)
+    CIU <- mean(MSD)+1.96*sd(MSD)
+    list(c(MSD=mean(MSD), CIL=CIL, CIU=CIU))
+  }
+
 }

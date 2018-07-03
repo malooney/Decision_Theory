@@ -32,34 +32,68 @@ library(readr)
 
 ```
 
-
-# Goals of this Research
-
-## Replicate the results of:
-
-  * Bayesian Inference for Agreement Measures.
-
-    - By: Ignacio Vidal and Mário de Castro.
-
-    - Journal of biopharmaceutical statistics, 2016 p. 809-823.
-
-
-## The main ideas behind the paper:
-
-Methods for assessing agreement between a set of paired observations has been well studied in the literature. Most of the studies have focused on using a frequentist approach to calculate several measures of measurement agreement.
-
 ## Outline
 
-* A Motivating Example with Real World Data
+* Introduction and Background
 
-* Assessing Agreement Between Measurements
+* Motivating Example - Part I
 
-* The Bayesian Model
+* Accessing Agreement
+
+* Bayesian Model
 
 * Simulation Results
 
-* Inferior Pelvic Infundibular Angle - Real Data
+* Motivating Example - Part II (Kidney Data Study)
 
+* Conclusion
+
+
+
+# Introduction and Background
+
+## Goals of this Research
+
+### Replicate the results of:
+
+  * **Bayesian Inference for Agreement Measures.^[Vidal, I., & de Castro Journal of biopharmaceutical statistics, M. (2017). Bayesian inference for agreement measures. Taylor & Francis
+, 27(5), 809–823. http://doi.org/10.1080/10543406.2016.1226323]**
+
+     By: Ignacio Vidal and Mário de Castro.
+
+     Journal of biopharmaceutical statistics, 2016 p. 809-823.
+
+
+
+## Goals of this Research
+
+### The main ideas behind the paper:
+
+* The agreement between a set of paired observations is important. 
+
+* Frequentist approach is commonly used.
+
+* Frequentist approach yields point estimates; CI and SE are not easily available.
+
+* A method which is general ,simple, effective, and doesn't require MCMC is presented. 
+
+
+
+## Goals of this Research
+
+### Our Goals
+
+* Study the method of agreement measures
+
+* Implement different prior distributions
+
+* Replicate simulation 
+
+* Real data study
+
+
+
+# Motivating Example - Part I
 
 ## A Motivating Example with Real World Data:
 
@@ -78,7 +112,7 @@ There are two main imaging tools used by clinicians to assess renal lithiasis:
 
 * The imaging costs associated with Computerized Tomography far out weigh the costs of imaging with alternative methods, including Intravenous Urography. 
 
-* The question is do these two imaging modalities provide equivalently adequate results in terms of imaging quality, accuracy and precession.
+* The question is: do these two imaging modalities provide equivalently adequate results in terms of image quality, accuracy and precession.
 
 * We need a way to assess how much agreement there is between measurements taken by Urography and Tomography.
 
@@ -92,6 +126,8 @@ There are two main imaging tools used by clinicians to assess renal lithiasis:
 * We will return to this example later...
 
 
+
+# Accessing Agreement
 
 ## Assessing Agreement Between Measurements:
 
@@ -107,7 +143,7 @@ $${\rho _c} = 1 - {{MSD} \over {MSD{|_{{\sigma _{xy}} = 0}}}} = {{2{\sigma _{XY}
 
 ## Assessing Agreement Between Measurements:
 
-* Two additional methods for assessing agreement that were explored by the authors are call the accuracy coefficient ($\chi_a$) and the precision coefficient ($\rho$).
+* Two additional methods for assessing agreement that were explored by the authors are called the accuracy coefficient ($\chi_a$) and the precision coefficient ($\rho$).
 
 $${\chi _a} = {2 \over {\bar \omega  + {1 \over {\bar \omega }} + {v^2}}},\bar \omega  = {{{\sigma^2}_Y} \over {\sigma_X^2}},{v^2} = {{{{({\mu _X} - {\mu_Y})}^2}} \over {{\sigma _X}{\sigma _Y}}}$$
 
@@ -115,41 +151,268 @@ $$\rho  = {{{\rho _c}} \over {{\chi _a}}}$$
 where $\rho$ is simply the Pearson correlation coefficient ($\rho=\frac{\sigma_{XY}}{\sigma_X\sigma_Y}$).
 
 
-# The Bayesian Model
+# Bayesian Model
 
 
 
 ## Likelihood
 
+$$p(X|\mu ,\Sigma ) \propto {\Sigma ^{ - {n \over 2}}}\exp \left\{ { - {1 \over 2}\sum\limits_{i = 1}^n {{{({x_i} - \mu )}^\prime }{\Sigma ^{ - 1}}({x_i} - \mu )} } \right\}$$
+
+$$p(X|\mu ,\Sigma ) \propto {\Sigma ^{ - {n \over 2}}}\exp \left\{ { - {1 \over 2}\sum\limits_{i = 1}^n {tr({\Sigma ^{ - 1}}S)} } \right\}$$
+
+where $S$ is the matrix of sum of squares (sometimes called the scatter matrix). 
+$$S = \sum\limits_{i = 1}^n {({x_i} - \bar x){{({x_i} - \bar x)}^\prime }} $$
+
+
 
 ## Prior
 
-### Jeffreys Prior
+### The natural conjugate prior is normal-inverse-wishart:
+
+$$\Sigma {\rm{ }} \sim {\rm{ I}}{{\rm{W}}_{v0}}{\rm{ }}\left( {\Lambda _0^{ - 1}{\rm{ }}} \right)$$
+$$\mu |\Sigma  \sim N({\mu _0},\Sigma /{k_o})$$
+$$p(\mu ,\Sigma ) = NIW({\mu _0},{k_0},{\Lambda _0},{v_0})$$
+$$p(\mu ,\Sigma ) = {1 \over Z}{\Sigma ^{ - \Omega}}\exp \left\{ { - {1 \over 2}tr({\Lambda _0}{\Sigma ^{ - 1}}) - {{{k_0}} \over 2}{{(\mu  - {\mu _0})}^\prime }{\Sigma ^{ - 1}}(\mu  - {\mu _0})} \right\}$$
+
+where $z = {{{2^{{v_0}df/2}}{\Gamma _{df}}({v_0}/2){{(2\pi /{k_0})}^{df/2}}} \over {{\Lambda _0}^{{v_0}/2}}}$; and $\Omega=[({v_0} + df)/2 + 1]$
 
 
-### Independence Jefferys Prior
+## Prior
+
+Vidal and de Castro consider five priors in their research; Jeffreys' Prior, Independence Jefferys' Prior, right-Haar prior, and two reference priors, one for $\rho$ and one for $\sigma$. We focus on the following three prior choices:
 
 
+### Jeffreys' Prior
+
+### Independence Jefferys' Prior
 
 ### Reference Prior for $\rho$
 
 
+
+## Prior
+
+### General formula for the objective prior family:
+
+\bigskip
+\bigskip
+\bigskip
+
+$${\pi _{ab}}(\mu ,\Sigma ) \propto {1 \over {\sigma _x^{3 - a}\sigma _y^{2 - b}{{(1 - {\rho ^2})}^{2 - b/2}}}}$$
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+
+
+## Prior
+
+### Jeffreys' Prior
+Jeffreys' Prior$\propto {\pi _J}(\mu ,\Sigma ) \propto {\pi _{10}}(\mu ,\Sigma )$
+
+\bigskip
+
+$${\pi _{J}}(\mu ,\Sigma ) \propto {1 \over {\sigma _x^{2}\sigma _y^{2}{{(1 - {\rho ^2})}^{2}}}}$$
+
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+
+
+## Prior
+
+\bigskip
+
+### Independence Jefferys Prior
+Independence Jeffreys' Prior $\propto {\pi _{IJ}}(\mu ,\Sigma ) \propto {\pi _{21}}(\mu ,\Sigma )$
+
+$${\pi _{IJ}}(\mu ,\Sigma ) \propto {1 \over {\sigma _x^{}\sigma _y^{}{{(1 - {\rho ^2})}^{-3/2}}}}$$
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+
+## Prior
+
+\bigskip
+\bigskip
+\bigskip
+
+### Reference Prior for $\rho$
+
+$${\pi _{R\rho }}(\mu ,\Sigma ) \propto {\rm{ }}{1 \over {{\rm{ }}\sigma _x^{}\sigma _y^{}(1 - {\rho ^2})}}$$
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+
 ## Posterior
 
+$$p(\mu ,\Sigma |X,{\mu _0},{k_0}{\Lambda _0},{v_0}) = NIW(\mu ,\Sigma |{\mu _n},{k_n},{\Lambda _n},{v_n})$$
+$$ \propto {\Sigma ^{ - \left\{ {({v_n} + df)/2} \right\} + 1}}\exp \left\{ { - {1 \over 2}tr({\Phi _n}{\Sigma ^{ - 1}}) - {{{k_n}} \over 2}{{(\mu  - {\mu _n})}^\prime }{\rm{ }}{\Sigma ^{ - 1}}(\mu  - {\mu _n})} \right\}$$
+The posterior distribution is: $p(\mu ,\Sigma |X)\sim Normal -Inverse Wishart(\mu_n, k_n^{-1},\Phi_n^{-1}, v_n )$
+
+Or more succinctly,
+$$\Sigma |x,y \sim I{W_2}\left( {{S^{ - 1}},n} \right)$$
+
+$$\mu |\Sigma ,x,y\sim~{N_2}\left[ {{{(\bar x,\bar y)}^\prime },{n^{ - 1}}\Sigma } \right]$$
+
+## Posterior
+
+### Drawing from the posterior distribution:
+
+Jeffreys' Prior:  $$\mu|\Sigma,x,y\sim N_2[(\bar{x}, \bar{y})^\prime,n^{-1}\Sigma] \quad \textrm{and} \quad  \Sigma|x,y \sim IW_2(S^{-1}, n)$$
+
+Independence Jefferys Prior: $$\mu|\Sigma,x,y\sim N_2[(\bar{x}, \bar{y})^\prime,n^{-1}\Sigma] \quad \textrm{and} \quad \Sigma|x,y \sim IW_2(S^{-1}, n-1)$$
+
+## Posterior
+
+### Drawing from the posterior distribution:
+
+Reference Prior for $\rho$
+
+Must employ acceptance-rejection algorithm:
+
+Simulation step. Generate $(\sigma_x,\sigma_y,\rho)$ from the $IW_2$ using $\pi_{IJ}(\mu,\Sigma)$ and independently generate $u$ from $Uniform(0,1)$.
+
+Rejection step. If $u\leq\pi_{R\rho}(\mu,\Sigma)/\pi_{IJ}(\mu,\Sigma)$, then accept $(\sigma_x,\sigma_y,\rho)$ else, return to the simulation step. Upon acceptance, generate $(\mu_x,\mu_y)$ from the $N_2$ distribution under the independence Jeffreys’ prior.
 
 # Simulation Results
 
+## Generating Simulation Data
+
+For each parameter combination given in the below Table, we generate 1000 data sets with sample size $n=(30, 100)$ and estimate MSD, CCC, precision $(\rho)$, and accuracy $(\chi_a)$. Simulation data was drawn from the multivariate normal distribution.
 
 
 
-# Inferior Pelvic Infundibular Angle Data
+| Combination | $\mu_x$ | $\mu_y$ | $\sigma_x^2$ | $\sigma_y^2$ | $\rho$ |
+|-------------|---------|---------|--------------|--------------|--------|
+| 1           | 100     | 100     | 100          | 100          | 0.99   |
+| 2           |         |         |              |              | 0.90   |
+| 3           |         |         |              |              | 0.80   |
+| 4           |         |         |              |              | 0.40   |
+| 5           | 100     | 100     | 100          | 125          | 0.99   |
+| 6           |         |         |              |              | 0.90   |
+| 7           |         |         |              |              | 0.80   |
+| 8           |         |         |              |              | 0.40   |
+<!-- | 9           | 100     | 105     | 100          | 100          | 0.99   | -->
+<!-- | 10          |         |         |              |              | 0.90   | -->
+<!-- | 11          |         |         |              |              | 0.80   | -->
+<!-- | 12          |         |         |              |              | 0.40   | -->
+<!-- | 13          | 135     | 135     | 88           | 88           | 0.99   | -->
+<!-- | 14          |         |         |              |              | 0.90   | -->
+<!-- | 15          |         |         |              |              | 0.80   | -->
+<!-- | 16          |         |         |              |              |  0.40  | -->
 
-## Kidney Anatomy
+
+## Simulation Results
+
+Averages of the posterior mean of some measures from 1000 replications and 5000 samples from the posterior distribution under selected parameter combinations (Comb.) and priors.
+
+\begin{tabular}{ |l|l|c|c|c|c|  }
+
+\multicolumn{5}{ r }{Jeffreys Prior} \\ \cline{3-6}
+
+\multicolumn{6}{ r }{Original \hspace{1.7cm} Replication} \\
+\hline
+Comb & Measure & n=30 & n=100 & n=30 & n=100 \\
+\hline
+1 & MSD       & 2.197  & 2.043  & 7.334  & 2.041 \\ \hline
+  & CCC       & 0.989  & 0.990  & 0.986  & 0.989 \\ \hline
+  & Precision & 0.990  & 0.990  & 0.986  & 0.989 \\ \hline
+  & Accuracy  & 0.999  & 1.000  & 0.999  & 0.999 \\ \hline
+6 & MSD       & 26.008 & 24.328 & 8.266 & 2.300 \\ \hline
+  & CCC       & 0.882  & 0.890  & 0.783  & 0.800 \\ \hline
+  & Precision & 0.90   & 0.899  & 0.803  & 0.820 \\ \hline
+  & Accuracy  & 0.983  & 0.991  & 0.999  & 0.975 \\ \hline
+\hline
+\end{tabular}
+
+
+## Simulation Results
+
+Averages of the posterior mean of some measures from 1000 replications and 5000 samples from the posterior distribution under selected parameter combinations (Comb.) and priors.
+
+\begin{tabular}{ |l|l|c|c|c|c|  }
+
+\multicolumn{5}{ r }{Independence Jeffreys} \\ \cline{3-6}
+
+\multicolumn{6}{ r }{Original \hspace{1.7cm} Replication} \\
+\hline
+Comb & Measure & n=30 & n=100 & n=30 & n=100 \\
+\hline
+1 & MSD       & 2.275  & 2.063  & 7.614  & 2.062 \\ \hline
+  & CCC       & 0.989  & 0.990  & 0.993  & 0.993 \\ \hline
+  & Precision & 0.990  & 0.990  & 0.993  & 0.993 \\ \hline
+  & Accuracy  & 0.999  & 1.000  & 0.999  & 0.999 \\ \hline
+6 & MSD       & 26.930 & 24.572 & 8.584  & 2.324 \\ \hline
+  & CCC       & 0.882  & 0.890  & 0.805  & 0.810 \\ \hline
+  & Precision & 0.900  & 0.899  & 0.825  & 0.831 \\ \hline
+  & Accuracy  & 0.983  & 0.991  & 0.975  & 0.975 \\ \hline
+\hline
+\end{tabular}
+
+
+## Simulation Results
+
+Averages of the posterior mean of some measures from 1000 replications and 5000 samples from the posterior distribution under selected parameter combinations (Comb.) and priors.
+
+\begin{tabular}{ |l|l|c|c|c|c|  }
+
+\multicolumn{5}{ r }{Reference Prior $\rho$} \\ \cline{3-6}
+
+\multicolumn{6}{ r }{Original \hspace{1.7cm} Replication} \\
+\hline
+Comb & Measure & n=30 & n=100 & n=30 & n=100 \\
+\hline
+1 & MSD       & .  & .  & 7.325  & 2.062 \\ \hline
+  & CCC       & .  & .  & 0.400  & 0.971 \\ \hline
+  & Precision & .  & .  & 0.400  & 0.971 \\ \hline
+  & Accuracy  & .  & .  & 0.999  & 0.999 \\ \hline
+6 & MSD       & .  & .  & 8.218  & 2.324 \\ \hline
+  & CCC       & .  & .  & 0.276  & 0.790 \\ \hline
+  & Precision & .  & .  & 0.283  & 0.810 \\ \hline
+  & Accuracy  & .  & .  & 0.975  & 0.975 \\ \hline
+\hline
+\end{tabular}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Motivating Example - Part II (Kidney Data Study)
+
+## Inferior Pelvic Infundibular Angle Data
 
 ![](~Slides/1677-5538-ibju-40-3-0337-gf01.jpg) ![](~Slides/image00796.jpeg)
 
 
 ## Data Summary
+
+Vidal and de Castro reported different values for the range of the data and the means and standard deviations: Urography $range(40^\circ-105^\circ)$; $\mu=75.8^\circ$; $sd=15.3^\circ$ and Tomography $range(40^\circ-108^\circ)$; $\mu=79.5^\circ$; $sd=17.2^\circ$. The original data reported values consistent with below table.
 
 ```{r, echo=F, results='asis'}
 
@@ -157,7 +420,7 @@ where $\rho$ is simply the Pearson correlation coefficient ($\rho=\frac{\sigma_{
 
 IPIA_Data <- read.csv("/Users/malooney/Google Drive/digitalLibrary/*Decesion_Theory/Decision_Theory/data/IPIA_Data.csv")
 
-descr(IPIA_Data[,-1], stats = c("n.valid", "mean", "q1", "med", "q3", "sd", "min", "max"), style = "rmarkdown", omit.headings = T, transpose = F)
+descr(IPIA_Data[,-1], stats = c("n.valid", "mean", "med", "sd", "min", "max"), style = "rmarkdown", omit.headings = T, transpose = F)
 
 
 ```
@@ -191,9 +454,220 @@ legend(40, 108,  c("Regression line", "perfect agreement line (U = T)"),
 
 * Precision coefficient ($\rho$).
 
+## Kidney Data - Bayesian Inference
+
+```{r, echo=F, warning=F, message=FALSE, include=F}
+
+JP_KidneyData_Bayes <- read_csv("/Users/malooney/Google Drive/digitalLibrary/*Decesion_Theory/Decision_Theory/data/JP_KidneyData_Bayes.csv", col_types = cols(X1 = col_skip()))
+
+source("/Users/malooney/Google Drive/digitalLibrary/*Decesion_Theory/Decision_Theory/scripts_and_functions/agreement_Stats.R")
+
+agreement_Stats(JP_KidneyData_Bayes)
+
+```
+
+Results obtained using the Jeffreys’ prior with 5000 posterior draws over 1000 replications. The average values over the Posterior distribution are reported below. Equal-Tail CI are reported in brackets.
+
+|  Measure  |      Original     |   Replication  |
+|:---------:|:-----------------:|:--------------:|
+|    MSD    |      104.407      |      4.803     |
+|           | (69.062, 150.126) | (4.792, 4.814) |
+|    CCC    |       0.808       |     0.6465     |
+|           |   (0.704, 0.889)  | (0.644, 0.648) |
+| Precision |       0.823       |      0.832     |
+|           |   (0.723, 0.901)  | (0.831, 0.833) |
+|  Accuracy |       0.985       |      0.776     |
+|           |   (0.954, 1.000)  | (0.775, 0.777) |
+
+## Kidney Data - Bayesian Inference
+
+###Authors results:
+
+![](/Users/malooney/Google Drive/digitalLibrary/*Decesion_Theory/Decision_Theory/Slides/Screen Shot 2018-07-02 at 9.37.19 PM.png)
+
+## Kidney Data - Bayesian Inference
+
+###From replication study:
+
+```{r, echo=F, message=F, warning=F}
+
+par(mfrow= c(2, 2), ps= 12, cex= 0.55, cex.main= 1.5)
+
+MSD(JP_KidneyData_Bayes, plot_MSD = 1)
+CCC(JP_KidneyData_Bayes, plot_CCC = 1)
+precision(JP_KidneyData_Bayes, plot_precision = 1)
+accuracy(JP_KidneyData_Bayes, plot_accuracy = 1)
+
+```
+
+# Conclusion
+
+## Conclusion
+
+* We have successfully replicated a large portion of Vidal's and de Castro's results.
+
+* There is a sizable discrepancy between several of our results and the authors. 
+
+* The results from several simulation studies match the authors reported results closely.
+
+* However, several simulation results did not agree.
+
+* The authors reported summary statistics for the real world data study do not agree with the original data source.
+
+* The replication results from the real world data study do not agree.
+
+* It is difficult to know for sure if we are working on the exact data as the authors.
+
+
+# Replication Results
+
+
+## Generating Simulation Data
+
+For each parameter combination given in the below Table, we generate 1000 data sets with sample size $n=(30, 100)$ and estimate MSD, CCC, precision $(\rho)$, and accuracy $(\chi_a)$. Simulation data was drawn from the multivariate normal distribution.
 
 
 
+| Combination | $\mu_x$ | $\mu_y$ | $\sigma_x^2$ | $\sigma_y^2$ | $\rho$ |
+|-------------|---------|---------|--------------|--------------|--------|
+| 1           | 100     | 100     | 100          | 100          | 0.99   |
+| 2           |         |         |              |              | 0.90   |
+| 3           |         |         |              |              | 0.80   |
+| 4           |         |         |              |              | 0.40   |
+| 5           | 100     | 100     | 100          | 125          | 0.99   |
+| 6           |         |         |              |              | 0.90   |
+| 7           |         |         |              |              | 0.80   |
+| 8           |         |         |              |              | 0.40   |
 
+## Generating Simulation Data
+
+| Combination | $\mu_x$ | $\mu_y$ | $\sigma_x^2$ | $\sigma_y^2$ | $\rho$ |
+|-------------|---------|---------|--------------|--------------|--------|
+| 9           | 100     | 105     | 100          | 125          | 0.99   |
+| 10          |         |         |              |              | 0.90   |
+| 11          |         |         |              |              | 0.80   |
+| 12          |         |         |              |              | 0.40   |
+| 13          | 135     | 135     | 88           | 88           | 0.99   |
+| 14          |         |         |              |              | 0.90   |
+| 15          |         |         |              |              | 0.80   |
+| 16          |         |         |              |              | 0.40   |
+
+
+## Simulation Results
+
+Averages of the posterior mean of some measures from 1000 replications and 5000 samples from the posterior distribution under selected parameter combinations (Comb.) and priors.
+
+\begin{tabular}{ |l|l|c|c|c|c|  }
+
+\multicolumn{5}{ r }{Jeffreys Prior} \\ \cline{3-6}
+
+\multicolumn{6}{ r }{Original \hspace{1.7cm} Replication} \\
+\hline
+Comb & Measure & n=30 & n=100 & n=30 & n=100 \\
+\hline
+1 & MSD       & 2.197  & 2.043  & 7.334  & 2.041 \\ \hline
+  & CCC       & 0.989  & 0.990  & 0.986  & 0.989 \\ \hline
+  & Precision & 0.990  & 0.990  & 0.986  & 0.989 \\ \hline
+  & Accuracy  & 0.999  & 1.000  & 0.999  & 0.999 \\ \hline
+6 & MSD       & 26.008 & 24.328 & 8.2666 & 2.300 \\ \hline
+  & CCC       & 0.882  & 0.890  & 0.783  & 0.800 \\ \hline
+  & Precision & 0.90   & 0.899  & 0.803  & 0.820 \\ \hline
+  & Accuracy  & 0.983  & 0.991  & 0.975  & 0.975 \\ \hline
+\hline
+\end{tabular}
+
+
+## Simulation Results
+
+Averages of the posterior mean of some measures from 1000 replications and 5000 samples from the posterior distribution under selected parameter combinations (Comb.) and priors.
+
+\begin{tabular}{ |l|l|c|c|c|c|  }
+
+\multicolumn{5}{ r }{Independence Jeffreys} \\ \cline{3-6}
+
+\multicolumn{6}{ r }{Original \hspace{1.7cm} Replication} \\
+\hline
+Comb & Measure & n=30 & n=100 & n=30 & n=100 \\
+\hline
+1 & MSD       & 2.275  & 2.063  & 7.614  & 2.062 \\ \hline
+  & CCC       & 0.989  & 0.990  & 0.993  & 0.993 \\ \hline
+  & Precision & 0.990  & 0.990  & 0.993  & 0.993 \\ \hline
+  & Accuracy  & 0.999  & 1.000  & 0.999  & 0.999 \\ \hline
+6 & MSD       & 26.930 & 24.572 & 8.584  & 2.324 \\ \hline
+  & CCC       & 0.882  & 0.890  & 0.805  & 0.810 \\ \hline
+  & Precision & 0.900  & 0.899  & 0.825  & 0.831 \\ \hline
+  & Accuracy  & 0.983  & 0.991  & 0.975  & 0.975 \\ \hline
+\hline
+\end{tabular}
+
+
+## Simulation Results
+
+Averages of the posterior mean of some measures from 1000 replications and 5000 samples from the posterior distribution under selected parameter combinations (Comb.) and priors.
+
+\begin{tabular}{ |l|l|c|c|c|c|  }
+
+\multicolumn{5}{ r }{Reference Prior $\rho$} \\ \cline{3-6}
+
+\multicolumn{6}{ r }{Original \hspace{1.7cm} Replication} \\
+\hline
+Comb & Measure & n=30 & n=100 & n=30 & n=100 \\
+\hline
+1 & MSD       & .  & .  & 7.325  & 2.062 \\ \hline
+  & CCC       & .  & .  & 0.400  & 0.971 \\ \hline
+  & Precision & .  & .  & 0.400  & 0.971 \\ \hline
+  & Accuracy  & .  & .  & 0.999  & 0.999 \\ \hline
+6 & MSD       & .  & .  & 8.218  & 2.324 \\ \hline
+  & CCC       & .  & .  & 0.276  & 0.790 \\ \hline
+  & Precision & .  & .  & 0.283  & 0.810 \\ \hline
+  & Accuracy  & .  & .  & 0.975  & 0.975 \\ \hline
+\hline
+\end{tabular}
+
+## Kidney Data - Bayesian Inference
+
+```{r, echo=F, warning=F, message=FALSE, include=F}
+
+JP_KidneyData_Bayes <- read_csv("/Users/malooney/Google Drive/digitalLibrary/*Decesion_Theory/Decision_Theory/data/JP_KidneyData_Bayes.csv", col_types = cols(X1 = col_skip()))
+
+source("/Users/malooney/Google Drive/digitalLibrary/*Decesion_Theory/Decision_Theory/scripts_and_functions/agreement_Stats.R")
+
+agreement_Stats(JP_KidneyData_Bayes)
+
+```
+
+Results obtained using the Jeffreys’ prior with 5000 posterior draws over 1000 replications. The average values over the Posterior distribution are reported below. Equal-Tail CI are reported in brackets.
+
+|  Measure  |      Original     |   Replication  |
+|:---------:|:-----------------:|:--------------:|
+|    MSD    |      104.407      |      4.803     |
+|           | (69.062, 150.126) | (4.792, 4.814) |
+|    CCC    |       0.808       |     0.6465     |
+|           |   (0.704, 0.889)  | (0.644, 0.648) |
+| Precision |       0.823       |      0.832     |
+|           |   (0.723, 0.901)  | (0.831, 0.833) |
+|  Accuracy |       0.985       |      0.776     |
+|           |   (0.954, 1.000)  | (0.775, 0.777) |
+
+## Kidney Data - Bayesian Inference
+
+###Authors results:
+
+![](/Users/malooney/Google Drive/digitalLibrary/*Decesion_Theory/Decision_Theory/Slides/Screen Shot 2018-07-02 at 9.37.19 PM.png)
+
+## Kidney Data - Bayesian Inference
+
+###From replication study:
+
+```{r, echo=F, message=F, warning=F}
+
+par(mfrow= c(2, 2), ps= 12, cex= 0.55, cex.main= 1.5)
+
+MSD(JP_KidneyData_Bayes, plot_MSD = 1)
+CCC(JP_KidneyData_Bayes, plot_CCC = 1)
+precision(JP_KidneyData_Bayes, plot_precision = 1)
+accuracy(JP_KidneyData_Bayes, plot_accuracy = 1)
+
+```
 
 
